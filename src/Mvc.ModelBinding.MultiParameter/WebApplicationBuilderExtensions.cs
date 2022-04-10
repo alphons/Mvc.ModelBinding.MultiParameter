@@ -63,7 +63,7 @@ public static class MvcCoreCorrectedExtensions
 	{
 		public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 		{
-			return new DateTime();// DateTime.Parse(reader.GetString());
+			return reader.GetDateTime();
 		}
 
 		public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
