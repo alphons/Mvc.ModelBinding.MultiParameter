@@ -102,3 +102,6 @@ builder.Services.AddMvcCore().AddMvcOptions(options =>
   options.ModelBinderProviders.Add(new GenericModelBinderProvider());
 }
 ```
+Every ValueProviderFactory can have its own `JsonSerializerOptions`.
+
+
