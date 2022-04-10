@@ -35,7 +35,7 @@ public async Task<IActionResult> DemoProposal(
 }
 ```
 
-This test uses `netproxy` jjvascript caller for posting Json to controllers.
+This test uses `netproxy` javascript caller for posting Json to controllers.
 
 ```javascript
 r = await netproxyasync("./api/DemoProposal/two?SomeParameter3=three&SomeParameter6=six",
