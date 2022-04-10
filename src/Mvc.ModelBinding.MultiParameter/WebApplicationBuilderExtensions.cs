@@ -1,4 +1,9 @@
 ﻿
+// AddMvcCoreCorrected
+// (C) 2022 Alphons van der Heijden
+// Date: 2022-04-10
+// Version: 1.2
+
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -30,19 +35,19 @@ public static class MvcCoreCorrectedExtensions
 			options.OutputFormatters.Clear();
 
 			var jsonOptions = new JsonSerializerOptions() { NumberHandling = JsonNumberHandling.AllowReadingFromString };
-			//Reading Json POST, Query, Header and Route providing models for a binder
+
+			// Reading Json POST, Query, Header and Route providing models for a binder
+			// All are using GenericValueProvider
 
 			options.ValueProviderFactories.Add(new JsonValueProviderFactory(jsonOptions));
-
 			options.ValueProviderFactories.Add(new HeaderValueProviderFactory());
 			options.ValueProviderFactories.Add(new CookyValueProviderFactory());
-
 			options.ValueProviderFactories.Add(new QueryStringValueProviderFactory());
 			options.ValueProviderFactories.Add(new RouteValueProviderFactory());
-			options.ValueProviderFactories.Add(new FormFileValueProviderFactory());
-			options.ValueProviderFactories.Add(new FormValueProviderFactory());	
+			options.ValueProviderFactories.Add(new FormValueProviderFactory());
 
-			// Generic binder gettings complete de-serialized models of ModelProvider
+			// Generic binder gettings complete de-serialized models of
+			// GenericValueProvider
 			options.ModelBinderProviders.Add(new GenericModelBinderProvider());
 
 			// Correct Json output formatting

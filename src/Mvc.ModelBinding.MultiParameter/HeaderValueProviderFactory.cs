@@ -1,19 +1,25 @@
 
 // HeaderValueProviderFactory
 // (C) 2022 Alphons van der Heijden
-// Date: 2022-04-06
-// Version: 1.1
+// Date: 2022-04-10
+// Version: 1.2
 
 using System.Text.Json;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
 #nullable enable
-
 public class HeaderValueProviderFactory : IValueProviderFactory
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
-
+	public HeaderValueProviderFactory(JsonSerializerOptions Options)
+	{
+		this.jsonSerializerOptions = Options;
+	}
+	public HeaderValueProviderFactory()
+	{
+		this.jsonSerializerOptions = null;
+	}
 	public Task CreateValueProviderAsync(ValueProviderFactoryContext context)
 	{
 		if (context == null)
@@ -41,16 +47,6 @@ public class HeaderValueProviderFactory : IValueProviderFactory
 		}
 
 		return Task.CompletedTask;
-	}
-
-	public HeaderValueProviderFactory(JsonSerializerOptions Options)
-	{
-		this.jsonSerializerOptions = Options;
-	}
-
-	public HeaderValueProviderFactory()
-	{
-		this.jsonSerializerOptions = null;
 	}
 }
 

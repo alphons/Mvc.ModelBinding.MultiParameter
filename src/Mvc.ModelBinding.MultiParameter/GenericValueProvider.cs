@@ -1,14 +1,13 @@
-using Microsoft.AspNetCore.Http;
-using System.Collections;
-using System.ComponentModel;
-using System.Diagnostics;
 
-// JsonModelProviderFactory, JsonModelProvider
+// GenericValueProvider
 // (C) 2022 Alphons van der Heijden
-// Date: 2022-04-04
-// Version: 1.0
+// Date: 2022-04-10
+// Version: 1.2
 
 using System.Text.Json;
+using System.ComponentModel;
+
+using Microsoft.AspNetCore.Http;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
@@ -31,26 +30,24 @@ public class GenericValueProvider : BindingSourceValueProvider
 
 	public override bool ContainsPrefix(string prefix)
 	{
-		Debug.WriteLine($"ContainsPrefix({prefix})");
+		System.Diagnostics.Debug.WriteLine($"ContainsPrefix({prefix})");
 
-		if (jsonDocument != null && jsonDocument.RootElement.ValueKind == JsonValueKind.Object)
-			return jsonDocument.RootElement.TryGetProperty(prefix, out _);
+		if (this.jsonDocument != null &&
+			this.jsonDocument.RootElement.ValueKind == JsonValueKind.Object &&
+			this.jsonDocument.RootElement.TryGetProperty(prefix, out _))
+			return true;
 
 		if (this.form != null)
 		{
 			if (this.form.ContainsKey(prefix))
 				return true;
 
-			if (this.form.Files != null)
-				return this.form.Files.Any(x => x.Name == prefix);
+			if (this.form.Files != null &&
+				this.form.Files.Any(x => x.Name == prefix))
+				return true;
 		}
 
 		return false;
-	}
-
-	public override ValueProviderResult GetValue(string key)
-	{
-		return ValueProviderResult.None;
 	}
 
 	/// <summary>
@@ -61,11 +58,12 @@ public class GenericValueProvider : BindingSourceValueProvider
 	/// <returns>null or object model of type</returns>
 	public override object? GetModel(string key, Type t)
 	{
-		Debug.WriteLine($"GetModel({key})");
+		System.Diagnostics.Debug.WriteLine($"GetModel({key})");
 
-		if (jsonDocument != null)
+		if (this.jsonDocument != null &&
+			this.jsonDocument.RootElement.ValueKind == JsonValueKind.Object &&
+			this.jsonDocument.RootElement.TryGetProperty(key, out JsonElement prop))
 		{
-			var prop = jsonDocument.RootElement.GetProperty(key);
 			// this needs some tweaking!!!
 			if (prop.ValueKind != JsonValueKind.Array || t.IsArray || (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(List<>)))
 			{
@@ -79,7 +77,7 @@ public class GenericValueProvider : BindingSourceValueProvider
 			}
 		}
 
-		if(this.form != null)
+		if (this.form != null)
 		{
 			if (this.form.ContainsKey(key))
 			{
@@ -93,10 +91,6 @@ public class GenericValueProvider : BindingSourceValueProvider
 			if (this.form.Files != null && t == typeof(IFormFile))
 				return this.form.Files.FirstOrDefault(x => x.Name == key);
 		}
-
 		return null;
 	}
-
 }
-
-

@@ -1,13 +1,14 @@
-﻿// GenericModelBinderProvider, GenericModelBinder
+﻿
+// GenericModelBinder
 // (C) 2022 Alphons van der Heijden
-// Date: 2022-04-05
-// Version: 1.1
+// Date: 2022-04-10
+// Version: 1.2
+
+using System.Runtime.ExceptionServices;
+
+namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
 #nullable enable
-
-using System.Diagnostics;
-using System.Runtime.ExceptionServices;
-namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
 /// <summary>
 /// An <see cref="IGetModelProvider"/> sufficient for most objects.
@@ -31,7 +32,7 @@ public class GenericModelBinder : IModelBinder
 			throw new ArgumentNullException(nameof(ModelBindingContext));
 
 		var defaultContext = bindingContext as DefaultModelBindingContext;
-		if(defaultContext == null)
+		if (defaultContext == null)
 			throw new ArgumentNullException(nameof(DefaultModelBindingContext));
 
 		var compositeValueProvider = defaultContext.OriginalValueProvider as CompositeValueProvider;
@@ -39,16 +40,16 @@ public class GenericModelBinder : IModelBinder
 			throw new ArgumentNullException(nameof(CompositeValueProvider));
 
 		var iBindingGetModelProviders = compositeValueProvider
-			.Where(x => x is IBindingSourceValueProvider provider && 
-			(bindingContext.BindingSource == null || 
+			.Where(x => x is IBindingSourceValueProvider provider &&
+			(bindingContext.BindingSource == null ||
 			provider.Filter(bindingContext.BindingSource) != null))
 			.Select(x => x as IBindingSourceValueProvider)
 			.ToList();
 
-		if (iBindingGetModelProviders.FirstOrDefault(x => x != null && 
+		if (iBindingGetModelProviders.FirstOrDefault(x => x != null &&
 		x.ContainsPrefix(defaultContext.OriginalModelName)) is not IBindingSourceValueProvider getModelProvider)
 		{
-			Debug.WriteLine($"Bind failed on: {defaultContext.OriginalModelName}");
+			System.Diagnostics.Debug.WriteLine($"Bind failed on: {defaultContext.OriginalModelName}");
 			return Task.CompletedTask; // Failed
 		}
 
@@ -87,13 +88,13 @@ public class GenericModelBinder : IModelBinder
 /// </summary>
 public class GenericModelBinderProvider : IModelBinderProvider
 {
-    public IModelBinder? GetBinder(ModelBinderProviderContext context)
-    {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
+	public IModelBinder? GetBinder(ModelBinderProviderContext context)
+	{
+		if (context == null)
+		{
+			throw new ArgumentNullException(nameof(context));
+		}
 
-        return new GenericModelBinder(context.Metadata.ModelType);
-    }
+		return new GenericModelBinder(context.Metadata.ModelType);
+	}
 }

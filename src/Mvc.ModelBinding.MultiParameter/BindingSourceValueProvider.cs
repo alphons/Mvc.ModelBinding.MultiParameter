@@ -1,8 +1,12 @@
 ﻿
+// BindingSourceValueProvider
+// (C) 2022 Alphons van der Heijden
+// Date: 2022-04-10
+// Version: 1.2
+
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
 #nullable enable
-
 public abstract class BindingSourceValueProvider : IBindingSourceValueProvider
 {
 	/// <summary>
@@ -31,7 +35,10 @@ public abstract class BindingSourceValueProvider : IBindingSourceValueProvider
 	public abstract bool ContainsPrefix(string prefix);
 
 	/// <inheritdoc />
-	public abstract ValueProviderResult GetValue(string key);
+	public virtual ValueProviderResult GetValue(string key)
+	{
+		return ValueProviderResult.None;
+	}
 
 	/// <inheritdoc />
 	public virtual IValueProvider? Filter(BindingSource bindingSource)
