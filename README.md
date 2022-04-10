@@ -1,4 +1,4 @@
-# Mvc.ModelBinding.MultiParameter
+consists# Mvc.ModelBinding.MultiParameter
 
 Calling controller methods using multiple parameter binding.
 
@@ -71,8 +71,7 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 app.Run();
 ```
-The extension `AddMvcCoreCorrected()` concists of:
-
+The extension `AddMvcCoreCorrected()` consists of:
 ```c#
 builder.Services.AddMvcCore().AddMvcOptions(options =>
 {
