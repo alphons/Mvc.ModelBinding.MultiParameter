@@ -91,10 +91,8 @@ builder.Services.AddMvcCore().AddMvcOptions(options =>
   options.ValueProviderFactories.Add(new JsonValueProviderFactory());
   options.ValueProviderFactories.Add(new HeaderValueProviderFactory());
   options.ValueProviderFactories.Add(new CookyValueProviderFactory());
-
   options.ValueProviderFactories.Add(new QueryStringValueProviderFactory());
   options.ValueProviderFactories.Add(new RouteValueProviderFactory());
-  options.ValueProviderFactories.Add(new FormFileValueProviderFactory());
   options.ValueProviderFactories.Add(new FormValueProviderFactory());	
 
   // One Generic binder getting complete de-serialized parameters
