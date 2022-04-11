@@ -73,31 +73,50 @@ app.Run();
 ```
 The extension `AddMvcCoreCorrected()` consists of:
 ```c#
-builder.Services.AddMvcCore().AddMvcOptions(options =>
+builder.Services.AddMvcCoreCorrected(bool CorrectDateTime = false)
 {
-  // Clear out all legacy stuff
-  options.InputFormatters.Clear();
-  options.ValueProviderFactories.Clear();
-  options.ModelValidatorProviders.Clear();
-  options.Conventions.Clear();
-  options.Filters.Clear();
-  options.ModelMetadataDetailsProviders.Clear();
-  options.ModelValidatorProviders.Clear();
-  options.ModelMetadataDetailsProviders.Clear();
-  options.ModelBinderProviders.Clear();
-  options.OutputFormatters.Clear();
+	return services.AddMvcCore().AddMvcOptions(options =>
+	{
+		options.InputFormatters.Clear();
+		options.ValueProviderFactories.Clear();
+		options.ModelValidatorProviders.Clear();
+		options.Conventions.Clear();
+		options.Filters.Clear();
+		options.ModelMetadataDetailsProviders.Clear();
+		options.ModelValidatorProviders.Clear();
+		options.ModelMetadataDetailsProviders.Clear();
+		options.ModelBinderProviders.Clear();
+		options.OutputFormatters.Clear();
 
-  // Adding our new custom valueproviders (all implementing GetModel)
-  options.ValueProviderFactories.Add(new JsonValueProviderFactory());
-  options.ValueProviderFactories.Add(new HeaderValueProviderFactory());
-  options.ValueProviderFactories.Add(new CookyValueProviderFactory());
-  options.ValueProviderFactories.Add(new QueryStringValueProviderFactory());
-  options.ValueProviderFactories.Add(new RouteValueProviderFactory());
-  options.ValueProviderFactories.Add(new FormValueProviderFactory());	
+		var jsonOptions = new JsonSerializerOptions() { NumberHandling = JsonNumberHandling.AllowReadingFromString };
 
-  // One Generic binder getting complete de-serialized parameters
-  // calling GetModel(name,type) on the new value-providers.
-  options.ModelBinderProviders.Add(new GenericModelBinderProvider());
+		// Reading Json POST, Query, Header and Route providing models for a binder
+		// All are using GenericValueProvider
+
+		options.ValueProviderFactories.Add(new JsonValueProviderFactory(jsonOptions));
+		options.ValueProviderFactories.Add(new HeaderValueProviderFactory());
+		options.ValueProviderFactories.Add(new CookyValueProviderFactory());
+		options.ValueProviderFactories.Add(new QueryStringValueProviderFactory());
+		options.ValueProviderFactories.Add(new RouteValueProviderFactory());
+		options.ValueProviderFactories.Add(new FormValueProviderFactory());
+
+		// Generic binder gettings complete de-serialized models of
+		// GenericValueProvider
+		options.ModelBinderProviders.Add(new GenericModelBinderProvider());
+
+		// Correct Json output formatting
+		var jsonSerializerOptions = new JsonSerializerOptions()
+		{
+			DictionaryKeyPolicy = null,
+			PropertyNamingPolicy = null
+		};
+
+		// Custom output formatting on DateTime elements
+		if (CorrectDateTime)
+			jsonSerializerOptions.Converters.Add(new DateTimeConverter());
+
+		options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
+	});
 }
 ```
 Every ValueProviderFactory can have its own `JsonSerializerOptions`.

@@ -19,7 +19,7 @@ public static class MvcCoreCorrectedExtensions
 	/// </summary>
 	/// <param name="services">IServiceCollection</param>
 	/// <returns>IMvcCoreBuilder</returns>
-	public static IMvcCoreBuilder AddMvcCoreCorrected(this IServiceCollection services, bool CorrectDateTime = true)
+	public static IMvcCoreBuilder AddMvcCoreCorrected(this IServiceCollection services, bool CorrectDateTime = false)
 	{
 		return services.AddMvcCore().AddMvcOptions(options =>
 		{
@@ -57,6 +57,7 @@ public static class MvcCoreCorrectedExtensions
 				PropertyNamingPolicy = null
 			};
 
+			// Custom output formatting on DateTime elements
 			if (CorrectDateTime)
 				jsonSerializerOptions.Converters.Add(new DateTimeConverter());
 
@@ -68,7 +69,7 @@ public static class MvcCoreCorrectedExtensions
 	{
 		public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 		{
-			return reader.GetDateTime();
+			return DateTime.Parse(reader.GetString() ?? string.Empty);
 		}
 
 		public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
