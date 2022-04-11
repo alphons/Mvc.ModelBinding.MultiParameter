@@ -73,52 +73,49 @@ app.Run();
 ```
 The extension `AddMvcCoreCorrected()` consists of:
 ```c#
-builder.Services.AddMvcCoreCorrected(bool CorrectDateTime = false)
-{
-	return services.AddMvcCore().AddMvcOptions(options =>
+	public static IMvcCoreBuilder AddMvcCoreCorrected(this IServiceCollection services, JsonSerializerOptions? jsonSerializerOptions = null)
 	{
-		options.InputFormatters.Clear();
-		options.ValueProviderFactories.Clear();
-		options.ModelValidatorProviders.Clear();
-		options.Conventions.Clear();
-		options.Filters.Clear();
-		options.ModelMetadataDetailsProviders.Clear();
-		options.ModelValidatorProviders.Clear();
-		options.ModelMetadataDetailsProviders.Clear();
-		options.ModelBinderProviders.Clear();
-		options.OutputFormatters.Clear();
-
-		var jsonOptions = new JsonSerializerOptions() { NumberHandling = JsonNumberHandling.AllowReadingFromString };
-
-		// Reading Json POST, Query, Header and Route providing models for a binder
-		// All are using GenericValueProvider
-
-		options.ValueProviderFactories.Add(new JsonValueProviderFactory(jsonOptions));
-		options.ValueProviderFactories.Add(new HeaderValueProviderFactory());
-		options.ValueProviderFactories.Add(new CookyValueProviderFactory());
-		options.ValueProviderFactories.Add(new QueryStringValueProviderFactory());
-		options.ValueProviderFactories.Add(new RouteValueProviderFactory());
-		options.ValueProviderFactories.Add(new FormValueProviderFactory());
-
-		// Generic binder gettings complete de-serialized models of
-		// GenericValueProvider
-		options.ModelBinderProviders.Add(new GenericModelBinderProvider());
-
-		// Correct Json output formatting
-		var jsonSerializerOptions = new JsonSerializerOptions()
+		return services.AddMvcCore().AddMvcOptions(options =>
 		{
-			DictionaryKeyPolicy = null,
-			PropertyNamingPolicy = null
-		};
+			options.EnableEndpointRouting = false;
 
-		// Custom output formatting on DateTime elements
-		if (CorrectDateTime)
-			jsonSerializerOptions.Converters.Add(new DateTimeConverter());
+			options.InputFormatters.Clear();
+			options.ValueProviderFactories.Clear();
+			options.ModelValidatorProviders.Clear();
+			options.Conventions.Clear();
+			options.Filters.Clear();
+			options.ModelMetadataDetailsProviders.Clear();
+			options.ModelValidatorProviders.Clear();
+			options.ModelMetadataDetailsProviders.Clear();
+			options.ModelBinderProviders.Clear();
+			options.OutputFormatters.Clear();
 
-		options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
-	});
-}
+			if (jsonSerializerOptions == null)
+				jsonSerializerOptions = new JsonSerializerOptions();
+
+			jsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
+
+			// Correct Json output formatting
+			jsonSerializerOptions.DictionaryKeyPolicy = null;
+			jsonSerializerOptions.PropertyNamingPolicy = null;
+
+			// Reading Json POST, Query, Header and Route providing models for a binder
+			// All are using GenericValueProvider and can have jsonSerializerOptions for deserializing Models
+
+			options.ValueProviderFactories.Add(new JsonValueProviderFactory(jsonSerializerOptions));
+			options.ValueProviderFactories.Add(new HeaderValueProviderFactory(jsonSerializerOptions));
+			options.ValueProviderFactories.Add(new CookyValueProviderFactory(jsonSerializerOptions));
+			options.ValueProviderFactories.Add(new QueryStringValueProviderFactory(jsonSerializerOptions));
+			options.ValueProviderFactories.Add(new RouteValueProviderFactory(jsonSerializerOptions));
+			options.ValueProviderFactories.Add(new FormValueProviderFactory(jsonSerializerOptions));
+
+			// Generic binder gettings complete de-serialized models of
+			// GenericValueProvider
+			options.ModelBinderProviders.Add(new GenericModelBinderProvider());
+
+			options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
+		});
 ```
-Every ValueProviderFactory can have its own `JsonSerializerOptions`.
+Every ValueProviderFactory deserializes by `JsonSerializerOptions`.
 
 

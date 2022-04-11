@@ -12,7 +12,7 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 public class CookyValueProviderFactory : IValueProviderFactory
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
-	public CookyValueProviderFactory(JsonSerializerOptions Options)
+	public CookyValueProviderFactory(JsonSerializerOptions? Options)
 	{
 		this.jsonSerializerOptions = Options;
 	}

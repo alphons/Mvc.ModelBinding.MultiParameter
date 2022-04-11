@@ -20,7 +20,7 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 public class QueryStringValueProviderFactory : IValueProviderFactory
 {
     private readonly JsonSerializerOptions? jsonSerializerOptions;
-    public QueryStringValueProviderFactory(JsonSerializerOptions Options) : base()
+    public QueryStringValueProviderFactory(JsonSerializerOptions? Options) : base()
     {
         this.jsonSerializerOptions = Options;
     }

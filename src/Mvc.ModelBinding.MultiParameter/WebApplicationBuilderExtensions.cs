@@ -1,8 +1,8 @@
 ﻿
 // AddMvcCoreCorrected
 // (C) 2022 Alphons van der Heijden
-// Date: 2022-04-10
-// Version: 1.2
+// Date: 2022-04-11
+// Version: 1.4
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -15,14 +15,17 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 public static class MvcCoreCorrectedExtensions
 {
 	/// <summary>
-	/// Cleanup the MVC pipeline
+	/// Cleanup the MVC pipeline and add ValueProviders based on GenericValueProvider
 	/// </summary>
 	/// <param name="services">IServiceCollection</param>
+	/// <param name="jsonSerializerOptions">JsonSerializerOptions</param>
 	/// <returns>IMvcCoreBuilder</returns>
-	public static IMvcCoreBuilder AddMvcCoreCorrected(this IServiceCollection services, bool CorrectDateTime = false)
+	public static IMvcCoreBuilder AddMvcCoreCorrected(this IServiceCollection services, JsonSerializerOptions? jsonSerializerOptions = null)
 	{
 		return services.AddMvcCore().AddMvcOptions(options =>
 		{
+			options.EnableEndpointRouting = false;
+
 			options.InputFormatters.Clear();
 			options.ValueProviderFactories.Clear();
 			options.ModelValidatorProviders.Clear();
@@ -34,47 +37,30 @@ public static class MvcCoreCorrectedExtensions
 			options.ModelBinderProviders.Clear();
 			options.OutputFormatters.Clear();
 
-			var jsonOptions = new JsonSerializerOptions() { NumberHandling = JsonNumberHandling.AllowReadingFromString };
+			if (jsonSerializerOptions == null)
+				jsonSerializerOptions = new JsonSerializerOptions();
+
+			jsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
+
+			// Correct Json output formatting
+			jsonSerializerOptions.DictionaryKeyPolicy = null;
+			jsonSerializerOptions.PropertyNamingPolicy = null;
 
 			// Reading Json POST, Query, Header and Route providing models for a binder
-			// All are using GenericValueProvider
+			// All are using GenericValueProvider and can have jsonSerializerOptions for deserializing Models
 
-			options.ValueProviderFactories.Add(new JsonValueProviderFactory(jsonOptions));
-			options.ValueProviderFactories.Add(new HeaderValueProviderFactory());
-			options.ValueProviderFactories.Add(new CookyValueProviderFactory());
-			options.ValueProviderFactories.Add(new QueryStringValueProviderFactory());
-			options.ValueProviderFactories.Add(new RouteValueProviderFactory());
-			options.ValueProviderFactories.Add(new FormValueProviderFactory());
+			options.ValueProviderFactories.Add(new JsonValueProviderFactory(jsonSerializerOptions));
+			options.ValueProviderFactories.Add(new HeaderValueProviderFactory(jsonSerializerOptions));
+			options.ValueProviderFactories.Add(new CookyValueProviderFactory(jsonSerializerOptions));
+			options.ValueProviderFactories.Add(new QueryStringValueProviderFactory(jsonSerializerOptions));
+			options.ValueProviderFactories.Add(new RouteValueProviderFactory(jsonSerializerOptions));
+			options.ValueProviderFactories.Add(new FormValueProviderFactory(jsonSerializerOptions));
 
 			// Generic binder gettings complete de-serialized models of
 			// GenericValueProvider
 			options.ModelBinderProviders.Add(new GenericModelBinderProvider());
 
-			// Correct Json output formatting
-			var jsonSerializerOptions = new JsonSerializerOptions()
-			{
-				DictionaryKeyPolicy = null,
-				PropertyNamingPolicy = null
-			};
-
-			// Custom output formatting on DateTime elements
-			if (CorrectDateTime)
-				jsonSerializerOptions.Converters.Add(new DateTimeConverter());
-
 			options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
 		});
-	}
-
-	public class DateTimeConverter : JsonConverter<DateTime>
-	{
-		public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			return DateTime.Parse(reader.GetString() ?? string.Empty);
-		}
-
-		public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
-		{
-			writer.WriteStringValue(value.ToLocalTime().ToString("yyyy'-'MM'-'dd' 'HH':'mm':'ss"));
-		}
 	}
 }

@@ -20,7 +20,7 @@ public class RouteValueProviderFactory : IValueProviderFactory
 {
     private readonly JsonSerializerOptions? jsonSerializerOptions;
 
-    public RouteValueProviderFactory(JsonSerializerOptions Options) : base()
+    public RouteValueProviderFactory(JsonSerializerOptions? Options) : base()
     {
         this.jsonSerializerOptions = Options;
     }

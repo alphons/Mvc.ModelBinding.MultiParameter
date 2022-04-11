@@ -12,7 +12,7 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 public class JsonValueProviderFactory : IValueProviderFactory
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
-	public JsonValueProviderFactory(JsonSerializerOptions Options)
+	public JsonValueProviderFactory(JsonSerializerOptions? Options)
 	{
 		this.jsonSerializerOptions = Options;
 	}

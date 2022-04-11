@@ -67,13 +67,13 @@ public class GenericValueProvider : BindingSourceValueProvider
 			// this needs some tweaking!!!
 			if (prop.ValueKind != JsonValueKind.Array || t.IsArray || (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(List<>)))
 			{
-				return prop.Deserialize(t, jsonSerializerOptions);
+				return prop.Deserialize(t, this.jsonSerializerOptions);
 			}
 			else
 			{
 				var first = prop.EnumerateArray().FirstOrDefault();
 				if (first.ValueKind != JsonValueKind.Null)
-					return first.Deserialize(t, jsonSerializerOptions);
+					return first.Deserialize(t, this.jsonSerializerOptions);
 			}
 		}
 

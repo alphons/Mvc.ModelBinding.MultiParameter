@@ -22,7 +22,7 @@ public class FormValueProviderFactory : IValueProviderFactory
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
 
-	public FormValueProviderFactory(JsonSerializerOptions Options) : base()
+	public FormValueProviderFactory(JsonSerializerOptions? Options) : base()
 	{
 		this.jsonSerializerOptions = Options;
 	}
