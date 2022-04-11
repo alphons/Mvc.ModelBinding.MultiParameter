@@ -4,8 +4,8 @@ Calling controller methods using multiple parameter binding.
 
 ```c#
 [HttpPost]
-[Route("~/api/DemoProposal/{SomeParameter2}")]
-public async Task<IActionResult> DemoProposal(
+[Route("~/api/SomeMethod/{SomeParameter2}")]
+public async Task<IActionResult> SomeMethod(
 	[FromCooky(Name = ".AspNetCore.Session")] string SomeParameter0, // #######
 	[FromHeader(Name = "Referer")] string SomeParameter1,	// "https://localhost:44346/"
 	[FromRoute] string SomeParameter2,			// "two"
@@ -21,8 +21,8 @@ public async Task<IActionResult> DemoProposal(
 And if parameter names are unique this can be simplified to:
 ```c#
 [HttpPost]
-[Route("~/api/DemoProposal2/{SomeParameter2}")]
-public async Task<IActionResult> DemoProposal(
+[Route("~/api/OtherMethod/{SomeParameter2}")]
+public async Task<IActionResult> OtherMethod(
 	string Referer,			// "https://localhost:44346/"
 	string SomeParameter2,		// "two"
 	string SomeParameter3,		// "three"
