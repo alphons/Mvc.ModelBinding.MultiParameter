@@ -24,6 +24,19 @@ function Init()
 {
 	result = $id('Result');
 	netproxy("./api/HelloWorld");
+
+	netproxy("./api/GetEnums", null, function ()
+	{
+		var data = this;
+	});
+
+	var product = { StatusType: "Active", AddressType : "Working" };
+
+	netproxy("./api/PostEnums", { product: product }, function ()
+	{
+		var data = this;
+	});
+
 }
 
 var r;

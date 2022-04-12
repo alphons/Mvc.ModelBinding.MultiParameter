@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
+#nullable disable
+
 namespace CoreBasic.Web.LogicControllers
 {
 	public class ComplexController : ControllerBase
@@ -495,6 +497,45 @@ namespace CoreBasic.Web.LogicControllers
 			});
 		}
 
+		public enum AddressEnum
+		{
+			Unknown,
+			Living,
+			Working
+		}
+
+		public enum StatusEnum
+		{
+			Unknown,
+			Active,
+			Passive
+		}
+
+		[HttpGet]
+		[Route("~/api/GetEnums")]
+		public async Task<IActionResult> GetEnums()
+		{
+			await Task.Yield();
+			return Ok(new
+			{
+				StatusEnum.Active,
+				AddressEnum.Working
+			});
+		}
+
+		public class Product
+		{
+			public StatusEnum StatusType { get; set; }
+			public AddressEnum AddressType { get; set; }
+		}
+
+		[HttpPost]
+		[Route("~/api/PostEnums")]
+		public async Task<IActionResult> PostEnums(Product product)
+		{
+			await Task.Yield();
+			return Ok();
+		}
 
 
 	}
