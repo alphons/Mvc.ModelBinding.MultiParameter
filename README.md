@@ -73,49 +73,49 @@ app.Run();
 ```
 The extension `AddMvcCoreCorrected()` consists of:
 ```c#
-	public static IMvcCoreBuilder AddMvcCoreCorrected(this IServiceCollection services, JsonSerializerOptions? jsonSerializerOptions = null)
+public static IMvcCoreBuilder AddMvcCoreCorrected(this IServiceCollection services, JsonSerializerOptions? jsonSerializerOptions = null)
+{
+	return services.AddMvcCore().AddMvcOptions(options =>
 	{
-		return services.AddMvcCore().AddMvcOptions(options =>
-		{
-			options.EnableEndpointRouting = false;
+		options.EnableEndpointRouting = false;
 
-			options.InputFormatters.Clear();
-			options.ValueProviderFactories.Clear();
-			options.ModelValidatorProviders.Clear();
-			options.Conventions.Clear();
-			options.Filters.Clear();
-			options.ModelMetadataDetailsProviders.Clear();
-			options.ModelValidatorProviders.Clear();
-			options.ModelMetadataDetailsProviders.Clear();
-			options.ModelBinderProviders.Clear();
-			options.OutputFormatters.Clear();
+		options.InputFormatters.Clear();
+		options.ValueProviderFactories.Clear();
+		options.ModelValidatorProviders.Clear();
+		options.Conventions.Clear();
+		options.Filters.Clear();
+		options.ModelMetadataDetailsProviders.Clear();
+		options.ModelValidatorProviders.Clear();
+		options.ModelMetadataDetailsProviders.Clear();
+		options.ModelBinderProviders.Clear();
+		options.OutputFormatters.Clear();
 
-			if (jsonSerializerOptions == null)
-				jsonSerializerOptions = new JsonSerializerOptions();
+		if (jsonSerializerOptions == null)
+			jsonSerializerOptions = new JsonSerializerOptions();
 
-			jsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
+		jsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
 
-			// Correct Json output formatting
-			jsonSerializerOptions.DictionaryKeyPolicy = null;
-			jsonSerializerOptions.PropertyNamingPolicy = null;
+		// Correct Json output formatting
+		jsonSerializerOptions.DictionaryKeyPolicy = null;
+		jsonSerializerOptions.PropertyNamingPolicy = null;
 
-			// Reading Json POST, Query, Header and Route providing models for a binder
-			// All are using GenericValueProvider and can have jsonSerializerOptions for deserializing Models
+		// Reading Json POST, Query, Header and Route providing models for a binder
+		// All are using GenericValueProvider and can have jsonSerializerOptions for deserializing Models
 
-			options.ValueProviderFactories.Add(new JsonValueProviderFactory(jsonSerializerOptions));
-			options.ValueProviderFactories.Add(new HeaderValueProviderFactory(jsonSerializerOptions));
-			options.ValueProviderFactories.Add(new CookyValueProviderFactory(jsonSerializerOptions));
-			options.ValueProviderFactories.Add(new QueryStringValueProviderFactory(jsonSerializerOptions));
-			options.ValueProviderFactories.Add(new RouteValueProviderFactory(jsonSerializerOptions));
-			options.ValueProviderFactories.Add(new FormValueProviderFactory(jsonSerializerOptions));
+		options.ValueProviderFactories.Add(new JsonValueProviderFactory(jsonSerializerOptions));
+		options.ValueProviderFactories.Add(new HeaderValueProviderFactory(jsonSerializerOptions));
+		options.ValueProviderFactories.Add(new CookyValueProviderFactory(jsonSerializerOptions));
+		options.ValueProviderFactories.Add(new QueryStringValueProviderFactory(jsonSerializerOptions));
+		options.ValueProviderFactories.Add(new RouteValueProviderFactory(jsonSerializerOptions));
+		options.ValueProviderFactories.Add(new FormValueProviderFactory(jsonSerializerOptions));
 
-			// Generic binder gettings complete de-serialized models of
-			// GenericValueProvider
-			options.ModelBinderProviders.Add(new GenericModelBinderProvider());
+		// Generic binder gettings complete de-serialized models of
+		// GenericValueProvider
+		options.ModelBinderProviders.Add(new GenericModelBinderProvider());
 
-			options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
-		});
-	}
+		options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
+	});
+}
 ```
 Every ValueProviderFactory deserializes by `JsonSerializerOptions`.
 
