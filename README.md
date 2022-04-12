@@ -115,6 +115,7 @@ The extension `AddMvcCoreCorrected()` consists of:
 
 			options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
 		});
+	}
 ```
 Every ValueProviderFactory deserializes by `JsonSerializerOptions`.
 
