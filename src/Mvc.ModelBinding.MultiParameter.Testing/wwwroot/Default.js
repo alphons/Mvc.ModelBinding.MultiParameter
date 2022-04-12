@@ -23,20 +23,7 @@ function PageEvents()
 function Init()
 {
 	result = $id('Result');
-	netproxy("./api/HelloWorld");
-
-	netproxy("./api/GetEnums", null, function ()
-	{
-		var data = this;
-	});
-
-	var product = { StatusType: "Active", AddressType : "Working" };
-
-	netproxy("./api/PostEnums", { product: product }, function ()
-	{
-		var data = this;
-	});
-
+	netproxy("./api/HelloWorld"); // Makes session (and cookie)
 }
 
 var r;
@@ -251,6 +238,24 @@ async function UnitTest()
 		});
 
 	// Checking, run till end
+
+	netproxy("./api/GetEnums", null, function ()
+	{
+		var data = this;
+	});
+
+	var product = { StatusType: 1, AddressType: 2 };
+
+	netproxy("./api/PostEnums", { product: product }, function ()
+	{
+		var data = this;
+	});
+
+	netproxy("./api/PostEnum", { status: 1 }, function ()
+	{
+		var data = this;
+	});
+
 	C("ready", "true == false");
 }
 

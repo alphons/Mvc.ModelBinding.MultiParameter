@@ -530,6 +530,14 @@ namespace CoreBasic.Web.LogicControllers
 		}
 
 		[HttpPost]
+		[Route("~/api/PostEnum")]
+		public async Task<IActionResult> PostEnum(StatusEnum status)
+		{
+			await Task.Yield();
+			return Ok();
+		}
+
+		[HttpPost]
 		[Route("~/api/PostEnums")]
 		public async Task<IActionResult> PostEnums(Product product)
 		{
