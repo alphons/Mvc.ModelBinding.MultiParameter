@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvc.ModelBinding.MultiParameter", "Mvc.ModelBinding.MultiParameter\Mvc.ModelBinding.MultiParameter.csproj", "{9701E8F9-3502-4C54-B73A-57A8BBA1DE99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mvc.ModelBinding.MultiParameter", "Mvc.ModelBinding.MultiParameter\Mvc.ModelBinding.MultiParameter.csproj", "{9701E8F9-3502-4C54-B73A-57A8BBA1DE99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvc.ModelBinding.MultiParameter.Testing", "Mvc.ModelBinding.MultiParameter.Testing\Mvc.ModelBinding.MultiParameter.Testing.csproj", "{5B1C4B92-9EB0-4633-AD98-494E5583CB50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{9701E8F9-3502-4C54-B73A-57A8BBA1DE99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9701E8F9-3502-4C54-B73A-57A8BBA1DE99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9701E8F9-3502-4C54-B73A-57A8BBA1DE99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B1C4B92-9EB0-4633-AD98-494E5583CB50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B1C4B92-9EB0-4633-AD98-494E5583CB50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B1C4B92-9EB0-4633-AD98-494E5583CB50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B1C4B92-9EB0-4633-AD98-494E5583CB50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
