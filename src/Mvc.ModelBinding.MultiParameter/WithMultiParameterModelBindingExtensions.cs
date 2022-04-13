@@ -15,7 +15,7 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 public static class WithMultiParameterModelBindingExtensions
 {
 	/// <summary>
-	/// Cleanup the MvcCore pipeline and add ValueProviders based on GenericValueProvider
+	/// Cleanup the MvcCore pipeline and add ValueProviders based on GenericValueProvider. Serialization options can be used.
 	/// </summary>
 	/// <param name="builder">IMvcCoreBuilder</param>
 	/// <param name="jsonSerializerOptions">JsonSerializerOptions</param>
