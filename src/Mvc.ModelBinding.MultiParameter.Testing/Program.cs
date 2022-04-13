@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddMvcCoreCorrected();
+builder.Services.AddMvcCore().WithMultiParameterModelBinding();
 
 builder.Services.AddDistributedMemoryCache();
 

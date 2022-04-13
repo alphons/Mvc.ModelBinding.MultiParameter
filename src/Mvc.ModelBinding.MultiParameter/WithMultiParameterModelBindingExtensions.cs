@@ -1,8 +1,8 @@
 ﻿
-// AddMvcCoreCorrected
+// WithMultiParameterBindingExtensions
 // (C) 2022 Alphons van der Heijden
-// Date: 2022-04-11
-// Version: 1.4
+// Date: 2022-04-13
+// Version: 1.5
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,17 +12,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
-public static class MvcCoreCorrectedExtensions
+public static class WithMultiParameterModelBindingExtensions
 {
 	/// <summary>
-	/// Cleanup the MVC pipeline and add ValueProviders based on GenericValueProvider
+	/// Cleanup the MvcCore pipeline and add ValueProviders based on GenericValueProvider
 	/// </summary>
-	/// <param name="services">IServiceCollection</param>
+	/// <param name="builder">IMvcCoreBuilder</param>
 	/// <param name="jsonSerializerOptions">JsonSerializerOptions</param>
 	/// <returns>IMvcCoreBuilder</returns>
-	public static IMvcCoreBuilder AddMvcCoreCorrected(this IServiceCollection services, JsonSerializerOptions? jsonSerializerOptions = null)
+	public static IMvcCoreBuilder WithMultiParameterModelBinding(this IMvcCoreBuilder builder, JsonSerializerOptions? jsonSerializerOptions = null)
 	{
-		return services.AddMvcCore().AddMvcOptions(options =>
+		return builder.AddMvcOptions(options =>
 		{
 			options.EnableEndpointRouting = false;
 

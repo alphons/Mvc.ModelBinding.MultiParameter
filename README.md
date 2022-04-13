@@ -61,7 +61,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
 var builder = WebApplication.CreateBuilder();
 
-builder.Services.AddMvcCoreCorrected();
+builder.Services.AddMvcCore().WithMultiParameterModelBinding();
 
 var app = builder.Build();
 app.UseSession();
@@ -71,11 +71,11 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 app.Run();
 ```
-The extension `AddMvcCoreCorrected()` consists of:
+The extension `WithMultiParameterModelBinding()` consists of:
 ```c#
-public static IMvcCoreBuilder AddMvcCoreCorrected(this IServiceCollection services, JsonSerializerOptions? jsonSerializerOptions = null)
+public static IMvcCoreBuilder WithMultiParameterModelBinding(this IMvcCoreBuilder builder, JsonSerializerOptions? jsonSerializerOptions = null)
 {
-	return services.AddMvcCore().AddMvcOptions(options =>
+	return builder.AddMvcOptions(options =>
 	{
 		options.EnableEndpointRouting = false;
 
