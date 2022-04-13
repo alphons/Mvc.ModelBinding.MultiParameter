@@ -38,7 +38,7 @@ public async Task<IActionResult> OtherMethod(
 This test uses `netproxy` javascript caller for posting Json to controllers.
 
 ```javascript
-r = await netproxyasync("./api/DemoProposal/two?SomeParameter3=three&SomeParameter6=six",
+r = await netproxyasync("./api/SomeMethod/two?SomeParameter3=three&SomeParameter6=six",
 {
   "SomeParameter4": // Now the beast has a name
   {
@@ -54,7 +54,8 @@ r = await netproxyasync("./api/DemoProposal/two?SomeParameter3=three&SomeParamet
 });
 ```
 
-For using the multi parameter binding use the `AddMvcCoreCorrected` extension, complete Program.cs:
+For using the multi parameter binding use the `WithMultiParameterModelBinding` extension.
+Example complete Program.cs:
 
 ```c#
 using Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
@@ -73,48 +74,49 @@ app.Run();
 ```
 The extension `WithMultiParameterModelBinding()` consists of:
 ```c#
-public static IMvcCoreBuilder WithMultiParameterModelBinding(this IMvcCoreBuilder builder, JsonSerializerOptions? jsonSerializerOptions = null)
+public static IMvcCoreBuilder WithMultiParameterModelBinding(this IMvcCoreBuilder builder, 
+     JsonSerializerOptions? jsonSerializerOptions = null)
 {
-	return builder.AddMvcOptions(options =>
-	{
-		options.EnableEndpointRouting = false;
+  return builder.AddMvcOptions(options =>
+  {
+    options.EnableEndpointRouting = false;
 
-		options.InputFormatters.Clear();
-		options.ValueProviderFactories.Clear();
-		options.ModelValidatorProviders.Clear();
-		options.Conventions.Clear();
-		options.Filters.Clear();
-		options.ModelMetadataDetailsProviders.Clear();
-		options.ModelValidatorProviders.Clear();
-		options.ModelMetadataDetailsProviders.Clear();
-		options.ModelBinderProviders.Clear();
-		options.OutputFormatters.Clear();
+    options.InputFormatters.Clear();
+    options.ValueProviderFactories.Clear();
+    options.ModelValidatorProviders.Clear();
+	options.Conventions.Clear();
+    options.Filters.Clear();
+    options.ModelMetadataDetailsProviders.Clear();
+    options.ModelValidatorProviders.Clear();
+    options.ModelMetadataDetailsProviders.Clear();
+    options.ModelBinderProviders.Clear();
+    options.OutputFormatters.Clear();
 
-		if (jsonSerializerOptions == null)
-			jsonSerializerOptions = new JsonSerializerOptions();
+    if (jsonSerializerOptions == null)
+      jsonSerializerOptions = new JsonSerializerOptions();
 
-		jsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
+    jsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
 
-		// Correct Json output formatting
-		jsonSerializerOptions.DictionaryKeyPolicy = null;
-		jsonSerializerOptions.PropertyNamingPolicy = null;
+    // Correct Json output formatting
+    jsonSerializerOptions.DictionaryKeyPolicy = null;
+    jsonSerializerOptions.PropertyNamingPolicy = null;
 
-		// Reading Json POST, Query, Header and Route providing models for a binder
-		// All are using GenericValueProvider and can have jsonSerializerOptions for deserializing Models
+    // Reading Json POST, Query, Header and Route providing models for a binder
+    // All are using GenericValueProvider and can have jsonSerializerOptions for deserializing Models
 
-		options.ValueProviderFactories.Add(new JsonValueProviderFactory(jsonSerializerOptions));
-		options.ValueProviderFactories.Add(new HeaderValueProviderFactory(jsonSerializerOptions));
-		options.ValueProviderFactories.Add(new CookyValueProviderFactory(jsonSerializerOptions));
-		options.ValueProviderFactories.Add(new QueryStringValueProviderFactory(jsonSerializerOptions));
-		options.ValueProviderFactories.Add(new RouteValueProviderFactory(jsonSerializerOptions));
-		options.ValueProviderFactories.Add(new FormValueProviderFactory(jsonSerializerOptions));
+    options.ValueProviderFactories.Add(new JsonValueProviderFactory(jsonSerializerOptions));
+    options.ValueProviderFactories.Add(new HeaderValueProviderFactory(jsonSerializerOptions));
+    options.ValueProviderFactories.Add(new CookyValueProviderFactory(jsonSerializerOptions));
+    options.ValueProviderFactories.Add(new QueryStringValueProviderFactory(jsonSerializerOptions));
+    options.ValueProviderFactories.Add(new RouteValueProviderFactory(jsonSerializerOptions));
+    options.ValueProviderFactories.Add(new FormValueProviderFactory(jsonSerializerOptions));
 
-		// Generic binder gettings complete de-serialized models of
-		// GenericValueProvider
-		options.ModelBinderProviders.Add(new GenericModelBinderProvider());
+    // Generic binder gettings complete de-serialized models of
+    // GenericValueProvider
+    options.ModelBinderProviders.Add(new GenericModelBinderProvider());
 
-		options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
-	});
+    options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
+  });
 }
 ```
 Every ValueProviderFactory deserializes by `JsonSerializerOptions`.
