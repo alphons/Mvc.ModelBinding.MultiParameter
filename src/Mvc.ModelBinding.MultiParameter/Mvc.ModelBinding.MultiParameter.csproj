@@ -7,12 +7,12 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageProjectUrl>https://github.com/alphons/Mvc.ModelBinding.MultiParameter</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/alphons/Mvc.ModelBinding.MultiParameter</RepositoryUrl>
+		<RepositoryUrl>https://github.com/alphons/Mvc.ModelBinding.MultiParameter.git</RepositoryUrl>
 		<Description>New ValueProviders and ModelBinder for multi parameters model binding out of the box on AspNetCore</Description>
-		<Version>1.0.6</Version>
-		<AssemblyVersion>6.0.0.6</AssemblyVersion>
-		<FileVersion>6.0.0.6</FileVersion>
-		<PackageLicenseExpression> GPL-3.0-or-later</PackageLicenseExpression>
+		<Version>1.0.7</Version>
+		<AssemblyVersion>6.0.0.7</AssemblyVersion>
+		<FileVersion>6.0.0.7</FileVersion>
+		<PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
 		<PackageTags>Microsoft;AspNetCore;Mvc;AspNetCoreMvc;json</PackageTags>
 		<PackageIcon>icon.png</PackageIcon>
 	</PropertyGroup>
