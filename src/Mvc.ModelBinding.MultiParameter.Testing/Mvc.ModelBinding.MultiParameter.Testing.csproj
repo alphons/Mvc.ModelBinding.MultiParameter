@@ -7,6 +7,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="netproxy" Version="1.0.5" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Content Update="wwwroot\*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>

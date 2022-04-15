@@ -1,7 +1,11 @@
 
 using Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    // the 'real' root of the application
+    ContentRootPath = AppDomain.CurrentDomain.BaseDirectory
+});
 
 builder.Services.AddMvcCore().WithMultiParameterModelBinding();
 

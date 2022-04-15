@@ -2,13 +2,18 @@
 <html lang="en">
 <head>
 	<title>Just Testing</title>
-	<meta charset="utf-8" />
-	<link href="./css/Default.css" rel="stylesheet" />
-	<link href="./css/Ui.css" rel="stylesheet" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<script src="./Scripts/macros.js" defer></script>
-	<script src="./Scripts/netproxy.js" defer></script>
-	<script src="./Default.js" defer></script>
+	<meta charset="utf-8" />
+
+	<!-- nugetpackage netproxy -->
+	<link href="css/netproxyspinner.css" rel="stylesheet" />
+	<script src="scripts/macros.js" defer></script>
+	<script src="scripts/netproxy.js" defer></script>
+
+	<link href="Default.css" rel="stylesheet" />
+	<link href="Ui.css" rel="stylesheet" />
+	<script src="Default.js" defer></script>
+
 </head>
 <body>
 	<div><span id="UnitTest" class="ui-btn">Unit Test</span></div>
@@ -20,6 +25,6 @@
 		<input type="file" id="UploadImage" />
 	</div>
 
-	<img src="images/spinner.gif" id="NetProxySpinner" />
+	<img src="images/netproxyspinner.gif" id="netproxyspinner" />
 </body>
 </html>
