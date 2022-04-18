@@ -28,14 +28,14 @@ public static class WithMultiParameterModelBindingExtensions
 
 			options.InputFormatters.Clear();
 			options.ValueProviderFactories.Clear();
-			options.ModelValidatorProviders.Clear();
-			options.Conventions.Clear();
-			options.Filters.Clear();
-			options.ModelMetadataDetailsProviders.Clear();
-			options.ModelValidatorProviders.Clear();
-			options.ModelMetadataDetailsProviders.Clear();
+			//options.ModelValidatorProviders.Clear();
+			//options.Conventions.Clear();
+			//options.Filters.Clear();
+			//options.ModelMetadataDetailsProviders.Clear();
+			//options.ModelValidatorProviders.Clear();
+			//options.ModelMetadataDetailsProviders.Clear();
 			options.ModelBinderProviders.Clear();
-			options.OutputFormatters.Clear();
+			//options.OutputFormatters.Clear();
 
 			if (jsonSerializerOptions == null)
 				jsonSerializerOptions = new JsonSerializerOptions();
