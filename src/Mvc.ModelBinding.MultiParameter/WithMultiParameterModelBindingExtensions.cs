@@ -26,7 +26,7 @@ public static class WithMultiParameterModelBindingExtensions
 		{
 			options.EnableEndpointRouting = false;
 
-			options.InputFormatters.Clear();
+			options.InputFormatters.RemoveType<SystemTextJsonInputFormatter>();
 
 			//options.ModelValidatorProviders.Clear();
 			//options.Conventions.Clear();
@@ -61,8 +61,20 @@ public static class WithMultiParameterModelBindingExtensions
 			options.ModelBinderProviders.Clear();
 			options.ModelBinderProviders.Add(new GenericModelBinderProvider());
 
-			options.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();
-			options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
+			// check existing JsonOutputFormatter and correct its policies
+			var jsonOutputFormatters = options.OutputFormatters.OfType<SystemTextJsonOutputFormatter>();
+			if (jsonOutputFormatters.Any())
+			{
+				foreach (var jsonOutputFormatter in jsonOutputFormatters)
+				{
+					jsonOutputFormatter.SerializerOptions.DictionaryKeyPolicy = null;
+					jsonOutputFormatter.SerializerOptions.PropertyNamingPolicy = null;
+				}
+			}
+			else
+			{
+				options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
+			}
 		});
 	}
 }
