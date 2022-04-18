@@ -1,7 +1,5 @@
 # Mvc.ModelBinding.MultiParameter
 
-
-
 Calling controller methods using multiple parameter binding.
 
 ```c#

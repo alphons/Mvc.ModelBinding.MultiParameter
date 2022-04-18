@@ -27,6 +27,7 @@ function Init()
 }
 
 var r;
+var result1,result2;
 
 function C(s, jscript)
 {
@@ -206,37 +207,6 @@ async function UnitTest()
 	C("ComplexArrayArrayClass", "r.GroupInfo.Users[0][0].Alias[1]== 'aliasb'");
 	C("ComplexArrayArrayClass", "r.GroupInfo.Users[0][0].Alias[2]== 'aliasc'");
 
-
-	r = await netproxyasync("./api/DemoProposal/two?SomeParameter3=three&SomeParameter6=six",
-		{
-			"SomeParameter4": // Now the beast has a name
-			{
-				Name: "four",
-				"Users":
-					[
-						[{ Name: "User00", Alias: ['aliasa', 'aliasb', 'aliasc'] }, { Name: "User01" }],
-						[{ Name: "User10" }, { Name: "User11" }],
-						[{ Name: "User20" }, { Name: "User21" }]
-					]
-			},
-			"SomeParameter5": "five" // double binder
-		});
-
-	r = await netproxyasync("./api/DemoProposal2/two?SomeParameter3=three&SomeParameter6=six",
-		{
-			"SomeParameter4": // Now the beast has a name
-			{
-				Name: "four",
-				"Users":
-					[
-						[{ Name: "User00", Alias: ['aliasa', 'aliasb', 'aliasc'] }, { Name: "User01" }],
-						[{ Name: "User10" }, { Name: "User11" }],
-						[{ Name: "User20" }, { Name: "User21" }]
-					]
-			},
-			"SomeParameter5": "five" // double binder
-		});
-
 	// Checking, run till end
 
 	netproxy("./api/GetEnums", null, function ()
@@ -300,4 +270,43 @@ function StartUpload(e)
 	{
 		$id("Result").innerText = 'Ready Length:' + this.Length + " ExtraValue:" + this.Form1;
 	}, window.NetProxyErrorHandler, ProgressHandler);
+}
+
+async function MultiBinderTest()
+{
+	$id("Result").innerText = '';
+	result1 = await netproxyasync("./api/DemoProposal/two?SomeParameter3=three&SomeParameter6=six",
+	{
+		"SomeParameter4": // Now the beast has a name
+		{
+			Name: "four",
+			"Users":
+			[
+				[{ Name: "User00", Alias: ['aliasa', 'aliasb', 'aliasc'] }, { Name: "User01" }],
+				[{ Name: "User10" }, { Name: "User11" }],
+				[{ Name: "User20" }, { Name: "User21" }]
+			]
+		},
+		"SomeParameter5": "five" // double binder
+	});
+
+	$id("Result").innerText = 'some alias: ' + result1.SomeParameter4.Users[0][0].Alias[1];
+
+	result2 = await netproxyasync("./api/DemoProposal2/two?SomeParameter3=three&SomeParameter6=six",
+	{
+		"SomeParameter4": // Now the beast has a name
+		{
+			Name: "four",
+			"Users":
+			[
+				[{ Name: "User00", Alias: ['aliasa', 'aliasb', 'aliasc'] }, { Name: "User01" }],
+				[{ Name: "User10" }, { Name: "User11" }],
+				[{ Name: "User20" }, { Name: "User21" }]
+			]
+		},
+		"SomeParameter5": "five" // double binder
+	});
+
+	$id("Result").innerText += ' other alias: ' + result2.SomeParameter4.Users[0][0].Alias[2];
+
 }

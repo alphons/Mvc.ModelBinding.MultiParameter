@@ -251,7 +251,13 @@ namespace CoreBasic.Web.LogicControllers
 
 			return Ok(new
 			{
-
+				SomeParameter0,
+				SomeParameter1,
+				SomeParameter2,
+				SomeParameter3,
+				SomeParameter4,
+				SomeParameter5,
+				SomeParameter6
 			});
 		}
 
@@ -269,7 +275,12 @@ namespace CoreBasic.Web.LogicControllers
 
 			return Ok(new
 			{
-
+				Referer,
+				SomeParameter2,
+				SomeParameter3,
+				SomeParameter4,
+				SomeParameter5,
+				SomeParameter6
 			});
 		}
 
