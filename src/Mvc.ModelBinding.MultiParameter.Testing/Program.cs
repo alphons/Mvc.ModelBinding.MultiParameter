@@ -19,8 +19,6 @@ var app = builder.Build();
 
 app.UseSession();
 
-app.UseRouting();
-
 app.MapControllers();
 
 app.UseDefaultFiles();

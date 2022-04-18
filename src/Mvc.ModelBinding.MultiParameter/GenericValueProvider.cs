@@ -30,7 +30,7 @@ public class GenericValueProvider : BindingSourceValueProvider
 
 	public override bool ContainsPrefix(string prefix)
 	{
-		//System.Diagnostics.Debug.WriteLine($"ContainsPrefix({prefix})");
+		//System.Diagnostics.Debug.WriteLine($"ContainsPrefix({prefix}) BIndingSource:{BindingSource.DisplayName}");
 
 		if (this.jsonDocument != null &&
 			this.jsonDocument.RootElement.ValueKind == JsonValueKind.Object &&
@@ -58,7 +58,7 @@ public class GenericValueProvider : BindingSourceValueProvider
 	/// <returns>null or object model of type</returns>
 	public override object? GetModel(string key, Type t)
 	{
-		//System.Diagnostics.Debug.WriteLine($"GetModel({key})");
+		//System.Diagnostics.Debug.WriteLine($"GetModel({key}) BIndingSource:{BindingSource.DisplayName}");
 
 		if (this.jsonDocument != null &&
 			this.jsonDocument.RootElement.ValueKind == JsonValueKind.Object &&

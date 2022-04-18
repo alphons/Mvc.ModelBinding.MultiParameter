@@ -39,10 +39,12 @@ public class GenericModelBinder : IModelBinder
 		if (compositeValueProvider == null)
 			throw new ArgumentNullException(nameof(CompositeValueProvider));
 
+		var bindingSource = bindingContext.BindingSource == BindingSource.FormFile ? BindingSource.Form :
+			bindingContext.BindingSource;
+
 		var iBindingGetModelProviders = compositeValueProvider
 			.Where(x => x is IBindingSourceValueProvider provider &&
-			(bindingContext.BindingSource == null ||
-			provider.Filter(bindingContext.BindingSource) != null))
+			(bindingSource == null || provider.Filter(bindingSource) != null))
 			.Select(x => x as IBindingSourceValueProvider)
 			.ToList();
 

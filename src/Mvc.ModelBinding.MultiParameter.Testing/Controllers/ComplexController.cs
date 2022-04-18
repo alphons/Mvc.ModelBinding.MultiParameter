@@ -496,14 +496,16 @@ namespace CoreBasic.Web.LogicControllers
 		[RequestFormLimits(MultipartBodyLengthLimit = 2_500_000_000)]
 		public async Task<IActionResult> Upload(IFormFile file, string Form1)
 		{
-			if (file.Length > 0)
+			long Length = -1;
+			if (file != null && file.Length > 0)
 			{
+				Length = file.Length;
 				using var ms = new MemoryStream();
 				await file.CopyToAsync(ms); // some dummy operation
 			}
 			return Ok(new 
-			{ 
-				file.Length,
+			{
+				Length,
 				Form1
 			});
 		}

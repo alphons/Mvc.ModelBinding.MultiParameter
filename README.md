@@ -54,8 +54,9 @@ r = await netproxyasync("./api/SomeMethod/two?SomeParameter3=three&SomeParameter
 });
 ```
 
-For using the multi parameter binding use the `WithMultiParameterModelBinding` extension.
-Example complete Program.cs:
+For the multi parameter binding use the `WithMultiParameterModelBinding` extension of
+Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter.
+Example Program.cs:
 
 ```c#
 using Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
@@ -66,7 +67,6 @@ builder.Services.AddMvcCore().WithMultiParameterModelBinding();
 
 var app = builder.Build();
 app.UseSession();
-app.UseRouting();
 app.MapControllers();
 app.UseDefaultFiles();
 app.UseStaticFiles();
@@ -74,36 +74,21 @@ app.Run();
 ```
 The extension `WithMultiParameterModelBinding()` consists of:
 ```c#
-public static IMvcCoreBuilder WithMultiParameterModelBinding(this IMvcCoreBuilder builder, 
-     JsonSerializerOptions? jsonSerializerOptions = null)
+public static IMvcCoreBuilder WithMultiParameterModelBinding(this IMvcCoreBuilder builder, JsonSerializerOptions? jsonSerializerOptions = null)
 {
   return builder.AddMvcOptions(options =>
   {
     options.EnableEndpointRouting = false;
-
-    options.InputFormatters.Clear();
-    options.ValueProviderFactories.Clear();
-    options.ModelValidatorProviders.Clear();
-	options.Conventions.Clear();
-    options.Filters.Clear();
-    options.ModelMetadataDetailsProviders.Clear();
-    options.ModelValidatorProviders.Clear();
-    options.ModelMetadataDetailsProviders.Clear();
-    options.ModelBinderProviders.Clear();
-    options.OutputFormatters.Clear();
+    options.InputFormatters.RemoveType<SystemTextJsonInputFormatter>();
 
     if (jsonSerializerOptions == null)
       jsonSerializerOptions = new JsonSerializerOptions();
 
     jsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
-
-    // Correct Json output formatting
     jsonSerializerOptions.DictionaryKeyPolicy = null;
     jsonSerializerOptions.PropertyNamingPolicy = null;
 
-    // Reading Json POST, Query, Header and Route providing models for a binder
-    // All are using GenericValueProvider and can have jsonSerializerOptions for deserializing Models
-
+    options.ValueProviderFactories.Clear();
     options.ValueProviderFactories.Add(new JsonValueProviderFactory(jsonSerializerOptions));
     options.ValueProviderFactories.Add(new HeaderValueProviderFactory(jsonSerializerOptions));
     options.ValueProviderFactories.Add(new CookyValueProviderFactory(jsonSerializerOptions));
@@ -111,11 +96,22 @@ public static IMvcCoreBuilder WithMultiParameterModelBinding(this IMvcCoreBuilde
     options.ValueProviderFactories.Add(new RouteValueProviderFactory(jsonSerializerOptions));
     options.ValueProviderFactories.Add(new FormValueProviderFactory(jsonSerializerOptions));
 
-    // Generic binder gettings complete de-serialized models of
-    // GenericValueProvider
+    options.ModelBinderProviders.Clear();
     options.ModelBinderProviders.Add(new GenericModelBinderProvider());
 
-    options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
+    var jsonOutputFormatters = options.OutputFormatters.OfType<SystemTextJsonOutputFormatter>();
+    if (jsonOutputFormatters.Any())
+    {
+      foreach (var jsonOutputFormatter in jsonOutputFormatters)
+      {
+        jsonOutputFormatter.SerializerOptions.DictionaryKeyPolicy = null;
+        jsonOutputFormatter.SerializerOptions.PropertyNamingPolicy = null;
+      }
+    }
+    else
+    {
+      options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
+    }
   });
 }
 ```
