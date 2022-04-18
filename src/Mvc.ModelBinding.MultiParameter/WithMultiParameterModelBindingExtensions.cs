@@ -27,14 +27,13 @@ public static class WithMultiParameterModelBindingExtensions
 			options.EnableEndpointRouting = false;
 
 			options.InputFormatters.Clear();
-			options.ValueProviderFactories.Clear();
+
 			//options.ModelValidatorProviders.Clear();
 			//options.Conventions.Clear();
 			//options.Filters.Clear();
 			//options.ModelMetadataDetailsProviders.Clear();
 			//options.ModelValidatorProviders.Clear();
 			//options.ModelMetadataDetailsProviders.Clear();
-			options.ModelBinderProviders.Clear();
 			//options.OutputFormatters.Clear();
 
 			if (jsonSerializerOptions == null)
@@ -49,6 +48,7 @@ public static class WithMultiParameterModelBindingExtensions
 			// Reading Json POST, Query, Header and Route providing models for a binder
 			// All are using GenericValueProvider and can have jsonSerializerOptions for deserializing Models
 
+			options.ValueProviderFactories.Clear();
 			options.ValueProviderFactories.Add(new JsonValueProviderFactory(jsonSerializerOptions));
 			options.ValueProviderFactories.Add(new HeaderValueProviderFactory(jsonSerializerOptions));
 			options.ValueProviderFactories.Add(new CookyValueProviderFactory(jsonSerializerOptions));
@@ -58,8 +58,10 @@ public static class WithMultiParameterModelBindingExtensions
 
 			// Generic binder gettings complete de-serialized models of
 			// GenericValueProvider
+			options.ModelBinderProviders.Clear();
 			options.ModelBinderProviders.Add(new GenericModelBinderProvider());
 
+			options.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();
 			options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
 		});
 	}
