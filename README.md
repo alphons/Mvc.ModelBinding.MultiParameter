@@ -54,13 +54,10 @@ r = await netproxyasync("./api/SomeMethod/two?SomeParameter3=three&SomeParameter
 });
 ```
 
-For the multi parameter binding use the `WithMultiParameterModelBinding` extension of
-Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter.
+For the multi parameter binding use the `WithMultiParameterModelBinding`.
 Example Program.cs:
 
 ```c#
-using Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
-
 var builder = WebApplication.CreateBuilder();
 
 builder.Services.AddMvcCore().WithMultiParameterModelBinding();
@@ -72,7 +69,7 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 app.Run();
 ```
-The extension `WithMultiParameterModelBinding()` consists of:
+The `Microsoft.Extensions.DependencyInjection` extension `WithMultiParameterModelBinding()` consists of:
 ```c#
 public static IMvcCoreBuilder WithMultiParameterModelBinding(this IMvcCoreBuilder builder, JsonSerializerOptions? jsonSerializerOptions = null)
 {

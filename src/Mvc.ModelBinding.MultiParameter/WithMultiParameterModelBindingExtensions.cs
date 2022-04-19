@@ -1,16 +1,16 @@
 ﻿
 // WithMultiParameterBindingExtensions
 // (C) 2022 Alphons van der Heijden
-// Date: 2022-04-13
-// Version: 1.5
+// Date: 2022-04-19
+// Version: 1.6
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
-namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
+namespace Microsoft.Extensions.DependencyInjection;
 
 public static class WithMultiParameterModelBindingExtensions
 {
