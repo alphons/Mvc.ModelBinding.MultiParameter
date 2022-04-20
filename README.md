@@ -75,7 +75,6 @@ public static IMvcCoreBuilder WithMultiParameterModelBinding(this IMvcCoreBuilde
 {
   return builder.AddMvcOptions(options =>
   {
-    options.EnableEndpointRouting = false;
     options.InputFormatters.RemoveType<SystemTextJsonInputFormatter>();
 
     if (jsonSerializerOptions == null)
