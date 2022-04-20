@@ -24,8 +24,6 @@ public static class WithMultiParameterModelBindingExtensions
 	{
 		return builder.AddMvcOptions(options =>
 		{
-			options.EnableEndpointRouting = false;
-
 			options.InputFormatters.RemoveType<SystemTextJsonInputFormatter>();
 
 			//options.ModelValidatorProviders.Clear();

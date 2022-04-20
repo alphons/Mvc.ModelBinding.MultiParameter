@@ -17,10 +17,10 @@ var app = builder.Build();
 
 app.UseSession();
 
-app.MapControllers();
-
 app.UseDefaultFiles();
 
 app.UseStaticFiles();
+
+app.MapControllers();
 
 app.Run();
