@@ -15,6 +15,8 @@ builder.Services.AddSession();
 
 var app = builder.Build();
 
+app.UseRouting();
+
 app.UseSession();
 
 app.UseDefaultFiles();

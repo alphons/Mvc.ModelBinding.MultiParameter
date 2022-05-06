@@ -63,6 +63,7 @@ var builder = WebApplication.CreateBuilder();
 builder.Services.AddMvcCore().WithMultiParameterModelBinding();
 
 var app = builder.Build();
+app.UseRouting();
 app.UseSession();
 app.MapControllers();
 app.UseDefaultFiles();
