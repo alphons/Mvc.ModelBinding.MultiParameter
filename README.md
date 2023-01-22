@@ -72,48 +72,6 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 app.Run();
 ```
-The `Microsoft.Extensions.DependencyInjection` extension `WithMultiParameterModelBinding()` consists of:
-```c#
-public static IMvcCoreBuilder WithMultiParameterModelBinding(this IMvcCoreBuilder builder, JsonSerializerOptions? jsonSerializerOptions = null)
-{
-  return builder.AddMvcOptions(options =>
-  {
-    options.InputFormatters.RemoveType<SystemTextJsonInputFormatter>();
 
-    if (jsonSerializerOptions == null)
-      jsonSerializerOptions = new JsonSerializerOptions();
-
-    jsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
-    jsonSerializerOptions.DictionaryKeyPolicy = null;
-    jsonSerializerOptions.PropertyNamingPolicy = null;
-
-    options.ValueProviderFactories.Clear();
-    options.ValueProviderFactories.Add(new JsonValueProviderFactory(jsonSerializerOptions));
-    options.ValueProviderFactories.Add(new HeaderValueProviderFactory(jsonSerializerOptions));
-    options.ValueProviderFactories.Add(new CookyValueProviderFactory(jsonSerializerOptions));
-    options.ValueProviderFactories.Add(new QueryStringValueProviderFactory(jsonSerializerOptions));
-    options.ValueProviderFactories.Add(new RouteValueProviderFactory(jsonSerializerOptions));
-    options.ValueProviderFactories.Add(new FormValueProviderFactory(jsonSerializerOptions));
-
-    options.ModelBinderProviders.Clear();
-    options.ModelBinderProviders.Add(new GenericModelBinderProvider());
-
-    var jsonOutputFormatters = options.OutputFormatters.OfType<SystemTextJsonOutputFormatter>();
-    if (jsonOutputFormatters.Any())
-    {
-      foreach (var jsonOutputFormatter in jsonOutputFormatters)
-      {
-        jsonOutputFormatter.SerializerOptions.DictionaryKeyPolicy = null;
-        jsonOutputFormatter.SerializerOptions.PropertyNamingPolicy = null;
-      }
-    }
-    else
-    {
-      options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
-    }
-  });
-}
-```
-Every ValueProviderFactory deserializes by `JsonSerializerOptions`.
 
 
