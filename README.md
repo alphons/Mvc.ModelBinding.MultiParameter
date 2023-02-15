@@ -60,7 +60,10 @@ For the multi parameter binding use the `WithMultiParameterModelBinding`.
 Example Program.cs:
 
 ```c#
-var builder = WebApplication.CreateBuilder();
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    ContentRootPath = AppDomain.CurrentDomain.BaseDirectory
+});
 
 builder.Services.AddMvcCore().WithMultiParameterModelBinding();
 
@@ -72,6 +75,8 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 app.Run();
 ```
+
+
 
 
 
