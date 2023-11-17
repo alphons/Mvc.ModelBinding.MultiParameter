@@ -6,7 +6,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
+using System.Text.Json.Serialization.Metadata;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
@@ -37,6 +37,7 @@ public static class WithMultiParameterModelBindingExtensions
 			if (jsonSerializerOptions == null)
 				jsonSerializerOptions = new JsonSerializerOptions();
 
+
 			jsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
 
 			// Correct Json output formatting
@@ -59,20 +60,24 @@ public static class WithMultiParameterModelBindingExtensions
 			options.ModelBinderProviders.Clear();
 			options.ModelBinderProviders.Add(new GenericModelBinderProvider());
 
-			// check existing JsonOutputFormatter and correct its policies
-			var jsonOutputFormatters = options.OutputFormatters.OfType<SystemTextJsonOutputFormatter>();
-			if (jsonOutputFormatters.Any())
+			// delete existing JsonOutputFormatter
+			for (int i = options.OutputFormatters.Count - 1; i >= 0; i--)
 			{
-				foreach (var jsonOutputFormatter in jsonOutputFormatters)
+				var formatter = options.OutputFormatters[i];
+				if (formatter.GetType() == typeof(SystemTextJsonOutputFormatter))
 				{
-					jsonOutputFormatter.SerializerOptions.DictionaryKeyPolicy = null;
-					jsonOutputFormatter.SerializerOptions.PropertyNamingPolicy = null;
+					options.OutputFormatters.Remove(formatter);
 				}
 			}
-			else
+
+			// add new JsonOutputFormatter
+			options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(new JsonSerializerOptions()
 			{
-				options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
-			}
+				TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
+				DictionaryKeyPolicy = null,
+				PropertyNamingPolicy = null
+			}));
+
 		});
 	}
 }

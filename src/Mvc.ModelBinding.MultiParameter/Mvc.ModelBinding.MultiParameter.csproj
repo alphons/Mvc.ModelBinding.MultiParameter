@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -10,11 +10,11 @@
 		<RepositoryUrl>https://github.com/alphons/Mvc.ModelBinding.MultiParameter.git</RepositoryUrl>
 		<Description>New ValueProviders and ModelBinder for multi parameters model binding out of the box on AspNetCore</Description>
 		<PackageDescription>New ValueProviders and ModelBinder for multi parameters model binding out of the box on AspNetCore</PackageDescription>
-		<Version>1.1.5</Version>
+		<Version>1.1.8</Version>
 		<PackageId>Mvc.ModelBinding.MultiParameter</PackageId>
 		<Authors>alphons</Authors>
-		<AssemblyVersion>7.0.1.0</AssemblyVersion>
-		<FileVersion>7.0.1.0</FileVersion>
+		<AssemblyVersion>8.0.1.0</AssemblyVersion>
+		<FileVersion>8.0.1.0</FileVersion>
 		<PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
 		<PackageTags>Microsoft;AspNetCore;Mvc;AspNetCoreMvc;json</PackageTags>
 		<PackageIcon>icon.png</PackageIcon>
