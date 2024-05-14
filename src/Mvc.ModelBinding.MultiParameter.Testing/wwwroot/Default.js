@@ -310,3 +310,9 @@ async function MultiBinderTest()
 	$id("Result").innerText += ' other alias: ' + result2.SomeParameter4.Users[0][0].Alias[2];
 
 }
+
+
+async function PostEnumAsString()
+{
+	var result = await netproxyasync("./api/PostEnumAsString", { status : 'Active' });
+}

@@ -65,7 +65,13 @@ public class GenericValueProvider : BindingSourceValueProvider
 			this.jsonDocument.RootElement.TryGetProperty(key, out JsonElement prop))
 		{
 			// this needs some tweaking!!!
-			if (prop.ValueKind != JsonValueKind.Array || t.IsArray || (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(List<>)))
+			if (t.IsEnum && prop.ValueKind == JsonValueKind.String)
+			{
+				_ = Enum.TryParse(t, prop.GetString(), out object? result);
+
+				return result;
+			}
+			else if (prop.ValueKind != JsonValueKind.Array || t.IsArray || (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(List<>)))
 			{
 				return prop.Deserialize(t, this.jsonSerializerOptions);
 			}
