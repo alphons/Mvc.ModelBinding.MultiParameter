@@ -1,16 +1,14 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
 #nullable disable
 
-namespace CoreBasic.Web.LogicControllers;
+namespace Mvc.ModelBinding.MultiParameter.Testing.Controllers;
 
+[Route("~/api")]
 public class ComplexController : ControllerBase
 {
-	[HttpGet]
-	[Route("~/api/index")]
-
+	[HttpGet("index")]
 	// 1.0
 	public async Task<IActionResult> Index(List<string> list)
 	{
@@ -24,9 +22,7 @@ public class ComplexController : ControllerBase
 	}
 
 	// 2.1
-
-	[HttpPost]
-	[Route("~/api/SimpleString1")]
+	[HttpPost("SimpleString1")]
 	public async Task<IActionResult> SimpleString1(string user)
 	{
 		await Task.Yield();
@@ -36,8 +32,7 @@ public class ComplexController : ControllerBase
 		});
 	}
 
-	[HttpPost]
-	[Route("~/api/SimpleString2")]
+	[HttpPost("SimpleString2")]
 	public async Task<IActionResult> SimpleString2([FromBody] string user)
 	{
 		await Task.Yield();
@@ -52,8 +47,7 @@ public class ComplexController : ControllerBase
 		public string user { get; set; }
 	}
 
-	[HttpPost]
-	[Route("~/api/SimpleString3")]
+	[HttpPost("SimpleString3")]
 	public async Task<IActionResult> SimpleString3(ModelOfString model)
 	{
 		await Task.Yield();
@@ -63,8 +57,7 @@ public class ComplexController : ControllerBase
 		});
 	}
 
-	[HttpPost]
-	[Route("~/api/SimpleString4")]
+	[HttpPost("~/api/SimpleString4")]
 	public async Task<IActionResult> SimpleString4([FromBody] ModelOfString model)
 	{
 		await Task.Yield();
@@ -75,8 +68,7 @@ public class ComplexController : ControllerBase
 	}
 
 	// 2.2
-	[HttpPost]
-	[Route("~/api/ArrayOfStrings1")]
+	[HttpPost("~/api/ArrayOfStrings1")]
 	public async Task<IActionResult> ArrayOfStrings1(List<string> users)
 	{
 		await Task.Yield();
@@ -86,8 +78,7 @@ public class ComplexController : ControllerBase
 		});
 	}
 
-	[HttpPost]
-	[Route("~/api/ArrayOfStrings2")]
+	[HttpPost("~/api/ArrayOfStrings2")]
 	public async Task<IActionResult> ArrayOfStrings2([FromBody] List<string> users)
 	{
 		await Task.Yield();
@@ -102,8 +93,7 @@ public class ComplexController : ControllerBase
 		public List<string> users { get; set; }
 	}
 
-	[HttpPost]
-	[Route("~/api/ArrayOfStrings3")]
+	[HttpPost("~/api/ArrayOfStrings3")]
 	public async Task<IActionResult> ArrayOfStrings3(ModelArrayOfStrings model)
 	{
 		await Task.Yield();
@@ -113,8 +103,7 @@ public class ComplexController : ControllerBase
 		});
 	}
 
-	[HttpPost]
-	[Route("~/api/ArrayOfStrings4")]
+	[HttpPost("~/api/ArrayOfStrings4")]
 	public async Task<IActionResult> ArrayOfStrings4([FromBody] ModelArrayOfStrings model)
 	{
 		await Task.Yield();
@@ -131,8 +120,7 @@ public class ComplexController : ControllerBase
 		public List<List<string>> users { get; set; }
 	}
 
-	[HttpPost]
-	[Route("~/api/ArrayOfArrayOfStrings1")]
+	[HttpPost("~/api/ArrayOfArrayOfStrings1")]
 	public async Task<IActionResult> ArrayOfArrayOfStrings1(ModelArrayOfArrayOfStrings model)
 	{
 		await Task.Yield();
@@ -142,8 +130,7 @@ public class ComplexController : ControllerBase
 		});
 	}
 
-	[HttpPost]
-	[Route("~/api/ArrayOfArrayOfStrings2")]
+	[HttpPost("~/api/ArrayOfArrayOfStrings2")]
 	public async Task<IActionResult> ArrayOfArrayOfStrings2([FromBody] ModelArrayOfArrayOfStrings model)
 	{
 		await Task.Yield();
@@ -153,8 +140,7 @@ public class ComplexController : ControllerBase
 		});
 	}
 
-	[HttpPost]
-	[Route("~/api/TwoParameters1")]
+	[HttpPost("~/api/TwoParameters1")]
 	public async Task<IActionResult> TwoParameters1(string a, string b)
 	{
 		await Task.Yield();
@@ -165,19 +151,18 @@ public class ComplexController : ControllerBase
 		});
 	}
 
-	[HttpPost]
-	[Route("~/api/TwoParameters2")]
+	[HttpPost("~/api/TwoParameters2")]
 	public async Task<IActionResult> TwoParameters2([FromBody] string a, string b)
 	{
 		await Task.Yield();
 		return Ok(new
 		{
-			a,b
+			a,
+			b
 		});
 	}
 
-	[HttpPost]
-	[Route("~/api/TwoParameters3")]
+	[HttpPost("~/api/TwoParameters3")]
 	public async Task<IActionResult> TwoParameters3([FromBody] ModelOfString a, ModelOfString b)
 	{
 		await Task.Yield();
@@ -190,8 +175,7 @@ public class ComplexController : ControllerBase
 
 	// Solution 1, problem of the repeater bug
 
-	[HttpPost]
-	[Route("~/api/ListOfDoubles")]
+	[HttpPost("~/api/ListOfDoubles")]
 	public async Task<IActionResult> ListOfDoubles(List<double?> list)
 	{
 		await Task.Yield();
@@ -209,9 +193,7 @@ public class ComplexController : ControllerBase
 		public override string ToString() => Name;
 	}
 
-
-	[HttpGet]
-	[Route("~/api/HelloWorld")]
+	[HttpGet("~/api/HelloWorld")]
 	public async Task<IActionResult> HelloWorld()
 	{
 		// Forces a session cooky
@@ -221,8 +203,18 @@ public class ComplexController : ControllerBase
 		return Ok();
 	}
 
-	[HttpPost]
-	[Route("~/api/ComplexTest")]
+	[HttpGet("~/api/NotANumber")]
+	public IActionResult NotANumber()
+	{
+		return Ok(
+			new
+			{
+				Value = double.NaN
+			});
+	}
+
+
+	[HttpPost("~/api/ComplexTest")]
 	public async Task<IActionResult> ComplexTest(
 		ApiModel SomeParameter4,
 		string SomeParameter5)
@@ -235,9 +227,7 @@ public class ComplexController : ControllerBase
 		});
 	}
 
-
-	[HttpPost]
-	[Route("~/api/DemoProposal/{SomeParameter2}")]
+	[HttpPost("~/api/DemoProposal/{SomeParameter2}")]
 	public async Task<IActionResult> DemoProposal(
 		[FromCooky(Name = ".AspNetCore.Session")] string SomeParameter0,
 		[FromHeader(Name = "Referer")] string SomeParameter1,
@@ -245,7 +235,7 @@ public class ComplexController : ControllerBase
 		[FromQuery] string SomeParameter3,
 		[FromBody] ApiModel SomeParameter4,
 		[FromBody] string SomeParameter5,
-		[FromQuery]string SomeParameter6)
+		[FromQuery] string SomeParameter6)
 	{
 		await Task.Yield();
 
@@ -261,8 +251,8 @@ public class ComplexController : ControllerBase
 		});
 	}
 
-	[HttpPost]
-	[Route("~/api/DemoProposal2/{SomeParameter2}")]
+
+	[HttpPost("~/api/DemoProposal2/{SomeParameter2}")]
 	public async Task<IActionResult> DemoProposal(
 		string Referer,
 		string SomeParameter2,
@@ -285,8 +275,7 @@ public class ComplexController : ControllerBase
 	}
 
 
-	[HttpPost]
-	[Route("~/api/ComplexString")]
+	[HttpPost("~/api/ComplexString")]
 	public async Task<IActionResult> ComplexString(string Name)
 	{
 		await Task.Yield();
@@ -297,8 +286,7 @@ public class ComplexController : ControllerBase
 		});
 	}
 
-	[HttpPost]
-	[Route("~/api/ComplexDouble")]
+	[HttpPost("~/api/ComplexDouble")]
 	public async Task<IActionResult> ComplexDouble(double? F)
 	{
 		await Task.Yield();
@@ -309,8 +297,7 @@ public class ComplexController : ControllerBase
 		});
 	}
 
-	[HttpPost]
-	[Route("~/api/ComplexStringInt")]
+	[HttpPost("~/api/ComplexStringInt")]
 	public async Task<IActionResult> ComplexStringInt(string Name, int A)
 	{
 		await Task.Yield();
@@ -322,8 +309,7 @@ public class ComplexController : ControllerBase
 		});
 	}
 
-	[HttpPost]
-	[Route("~/api/ComplexListOfStrings")]
+	[HttpPost("~/api/ComplexListOfStrings")]
 	public async Task<IActionResult> ComplexListOfStrings(List<string> ListOfStrings)
 	{
 		await Task.Yield();
@@ -334,8 +320,7 @@ public class ComplexController : ControllerBase
 		});
 	}
 
-	[HttpPost]
-	[Route("~/api/ComplexListOfInts")]
+	[HttpPost("~/api/ComplexListOfInts")]
 	public async Task<IActionResult> ComplexListOfInts(List<int?> ListOfInts)
 	{
 		await Task.Yield();
@@ -346,8 +331,7 @@ public class ComplexController : ControllerBase
 		});
 	}
 
-	[HttpPost]
-	[Route("~/api/ComplexListNullableDouble")]
+	[HttpPost("~/api/ComplexListNullableDouble")]
 	public async Task<IActionResult> ComplexListNullableDouble(List<double?> list)
 	{
 		await Task.Yield();
@@ -358,9 +342,7 @@ public class ComplexController : ControllerBase
 		});
 	}
 
-
-	[HttpPost]
-	[Route("~/api/ComplexListObjecs")]
+	[HttpPost("~/api/ComplexListObjecs")]
 	public async Task<IActionResult> ComplexListObjecs(List<string> list)
 	{
 		await Task.Yield();
@@ -371,8 +353,7 @@ public class ComplexController : ControllerBase
 		});
 	}
 
-	[HttpPost]
-	[Route("~/api/ComplexStringList")]
+	[HttpPost("~/api/ComplexStringList")]
 	public async Task<IActionResult> ComplexStringList(string Name, List<string> list)
 	{
 		await Task.Yield();
@@ -388,7 +369,7 @@ public class ComplexController : ControllerBase
 	{
 		public List<ObjectA> List { get; set; }
 
-		public string Name { get;set;}
+		public string Name { get; set; }
 	}
 
 	public class ObjectA
@@ -397,8 +378,7 @@ public class ComplexController : ControllerBase
 		public string b { get; set; }
 	}
 
-	[HttpPost]
-	[Route("~/api/ComplexSingleObject")]
+	[HttpPost("~/api/ComplexSingleObject")]
 	public async Task<IActionResult> ComplexSingleObject(ObjectA AA)
 	{
 		await Task.Yield();
@@ -409,9 +389,7 @@ public class ComplexController : ControllerBase
 		});
 	}
 
-
-	[HttpPost]
-	[Route("~/api/ComplexArray")]
+	[HttpPost("~/api/ComplexArray")]
 	public async Task<IActionResult> ComplexArray(ObjectA[] list)
 	{
 		await Task.Yield();
@@ -422,8 +400,7 @@ public class ComplexController : ControllerBase
 		});
 	}
 
-	[HttpPost]
-	[Route("~/api/ComplexObjectArray")]
+	[HttpPost("~/api/ComplexObjectArray")]
 	public async Task<IActionResult> ComplexObjectArray(ObjectB objB)
 	{
 		await Task.Yield();
@@ -440,8 +417,7 @@ public class ComplexController : ControllerBase
 		public List<List<string>> Users { get; set; }
 	}
 
-	[HttpPost]
-	[Route("~/api/ComplexArrayArray")]
+	[HttpPost("~/api/ComplexArrayArray")]
 	public async Task<IActionResult> ComplexArrayArray(string Group, ObjectC List)
 	{
 		await Task.Yield();
@@ -466,8 +442,7 @@ public class ComplexController : ControllerBase
 		public List<List<Usert>> Users { get; set; }
 	}
 
-	[HttpPost]
-	[Route("~/api/ComplexArrayArrayClass")]
+	[HttpPost("~/api/ComplexArrayArrayClass")]
 	public async Task<IActionResult> ComplexArrayArrayClass(bool Testing, bool Relaxed, string Group, ObjectD GroupInfo)
 	{
 		await Task.Yield();
@@ -490,8 +465,7 @@ public class ComplexController : ControllerBase
 	/// </summary>
 	/// <param name="formFile"></param>
 	/// <returns></returns>
-	[HttpPost]
-	[Route("~/api/Upload")]
+	[HttpPost("~/api/Upload")]
 	[RequestSizeLimit(2_500_000_000)]
 	[RequestFormLimits(MultipartBodyLengthLimit = 2_500_000_000)]
 	public async Task<IActionResult> Upload(IFormFile file, string Form1)
@@ -503,7 +477,7 @@ public class ComplexController : ControllerBase
 			using var ms = new MemoryStream();
 			await file.CopyToAsync(ms); // some dummy operation
 		}
-		return Ok(new 
+		return Ok(new
 		{
 			Length,
 			Form1
@@ -524,8 +498,7 @@ public class ComplexController : ControllerBase
 		Passive
 	}
 
-	[HttpGet]
-	[Route("~/api/GetEnums")]
+	[HttpGet("~/api/GetEnums")]
 	public async Task<IActionResult> GetEnums()
 	{
 		await Task.Yield();
@@ -542,16 +515,14 @@ public class ComplexController : ControllerBase
 		public AddressEnum AddressType { get; set; }
 	}
 
-	[HttpPost]
-	[Route("~/api/PostEnum")]
+	[HttpPost("~/api/PostEnum")]
 	public async Task<IActionResult> PostEnum(StatusEnum status)
 	{
 		await Task.Yield();
 		return Ok();
 	}
 
-	[HttpPost]
-	[Route("~/api/PostEnums")]
+	[HttpPost("~/api/PostEnums")]
 	public async Task<IActionResult> PostEnums(Product product)
 	{
 		await Task.Yield();

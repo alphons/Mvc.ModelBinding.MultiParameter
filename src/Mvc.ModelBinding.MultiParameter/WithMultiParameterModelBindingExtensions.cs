@@ -34,12 +34,13 @@ public static class WithMultiParameterModelBindingExtensions
 			//options.ModelMetadataDetailsProviders.Clear();
 			//options.OutputFormatters.Clear();
 
-			if (jsonSerializerOptions == null)
-				jsonSerializerOptions = new JsonSerializerOptions();
+			jsonSerializerOptions ??= new JsonSerializerOptions();
 
+			jsonSerializerOptions.NumberHandling |= 
+			JsonNumberHandling.AllowReadingFromString | 
+			JsonNumberHandling.AllowNamedFloatingPointLiterals;
 
-			jsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
-
+			jsonSerializerOptions.TypeInfoResolver = new DefaultJsonTypeInfoResolver();
 			// Correct Json output formatting
 			jsonSerializerOptions.DictionaryKeyPolicy = null;
 			jsonSerializerOptions.PropertyNamingPolicy = null;
@@ -71,13 +72,7 @@ public static class WithMultiParameterModelBindingExtensions
 			}
 
 			// add new JsonOutputFormatter
-			options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(new JsonSerializerOptions()
-			{
-				TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
-				DictionaryKeyPolicy = null,
-				PropertyNamingPolicy = null
-			}));
-
+			options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
 		});
 	}
 }

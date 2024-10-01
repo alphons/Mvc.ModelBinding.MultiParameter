@@ -226,6 +226,15 @@ async function UnitTest()
 		var data = this;
 	});
 
+	netproxy("./api/NotANumber", null, function ()
+	{
+		var a = this.Value;
+	});
+
+	r = await netproxyasync("./api/NotANumber");
+
+	C("NotANumber", "r.Value == 'NaN'");
+
 	C("ready", "true == false");
 }
 
