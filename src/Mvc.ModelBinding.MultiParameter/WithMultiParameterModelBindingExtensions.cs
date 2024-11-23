@@ -1,8 +1,9 @@
 ﻿
 // WithMultiParameterBindingExtensions
 // (C) 2022 Alphons van der Heijden
-// Date: 2022-04-19
-// Version: 1.6
+// Version: 1.2 Date: 2022-04-10
+// Version: 1.3 Date: 2024-11-23
+
 
 using System.Text.Json;
 using System.Text.Json.Serialization;

@@ -6,8 +6,31 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 namespace Mvc.ModelBinding.MultiParameter.Testing.Controllers;
 
 [Route("~/api")]
-public class ComplexController : ControllerBase
+public class ApiController : ControllerBase
 {
+	[HttpGet("~/api/HelloWorld")]
+	public async Task<IActionResult> HelloWorld()
+	{
+		// Forces a session cooky
+		HttpContext.Session.SetString("Hello", "World");
+
+		await HttpContext.Session.CommitAsync();
+
+		HttpContext.Response.Cookies.Append("mycookie", "1234");
+
+		return Ok();
+	}
+
+	[HttpGet("~/api/GetHeader")]
+	public IActionResult GetHeader(string Accept)
+	{
+		return Ok(new 
+		{ 
+			Value = Accept
+		});
+	}
+
+
 	[HttpGet("index")]
 	// 1.0
 	public async Task<IActionResult> Index(List<string> list)
@@ -193,15 +216,16 @@ public class ComplexController : ControllerBase
 		public override string ToString() => Name;
 	}
 
-	[HttpGet("~/api/HelloWorld")]
-	public async Task<IActionResult> HelloWorld()
-	{
-		// Forces a session cooky
-		HttpContext.Session.SetString("Hello", "World");
-		await HttpContext.Session.CommitAsync();
 
-		return Ok();
+	[HttpGet("~/api/GetSomeSessionValue")]
+	public IActionResult GetSomeSessionValue(string Hello)
+	{
+		return Ok(new
+		{
+			Value = Hello
+		});
 	}
+
 
 	[HttpGet("~/api/NotANumber")]
 	public IActionResult NotANumber()
@@ -534,6 +558,26 @@ public class ComplexController : ControllerBase
 	public async Task<IActionResult> PostEnumAsString(StatusEnum status)
 	{
 		await Task.Yield();
-		return Ok(true);
+		return Ok(new
+		{
+			Status = status.ToString(),
+			Value = (int)status
+		});
+	}
+
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="mycookie">the name of the var must the name of the cookie</param>
+	/// <returns></returns>
+	[HttpGet("~/api/GetCookie")]
+	public async Task<IActionResult> GetCookie(string mycookie)
+	{
+		await Task.Yield();
+		return Ok(new
+		{
+			Value = mycookie
+		});
 	}
 }

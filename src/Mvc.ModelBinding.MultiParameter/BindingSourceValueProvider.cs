@@ -1,12 +1,11 @@
 ﻿
 // BindingSourceValueProvider
 // (C) 2022 Alphons van der Heijden
-// Date: 2022-04-10
-// Version: 1.2
+// Version: 1.2 Date: 2022-04-10
+// Version: 1.3 Date: 2024-11-23
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
-#nullable enable
 public abstract class BindingSourceValueProvider : IBindingSourceValueProvider
 {
 	/// <summary>
@@ -14,14 +13,11 @@ public abstract class BindingSourceValueProvider : IBindingSourceValueProvider
 	/// </summary>
 	/// <param name="bindingSource">
 	/// The <see cref="ModelBinding.BindingSource"/>. Must be a single-source (non-composite) with
-	/// <see cref="ModelBinding.BindingSource.IsGreedy"/> equal to <c>false</c>.
+	/// <see cref="BindingSource.IsGreedy"/> equal to <c>false</c>.
 	/// </param>
 	public BindingSourceValueProvider(BindingSource bindingSource)
 	{
-		if (bindingSource == null)
-		{
-			throw new ArgumentNullException(nameof(bindingSource));
-		}
+		ArgumentNullException.ThrowIfNull(bindingSource);
 
 		BindingSource = bindingSource;
 	}
@@ -43,19 +39,12 @@ public abstract class BindingSourceValueProvider : IBindingSourceValueProvider
 	/// <inheritdoc />
 	public virtual IValueProvider? Filter(BindingSource bindingSource)
 	{
-		if (bindingSource == null)
-		{
-			throw new ArgumentNullException(nameof(bindingSource));
-		}
+		ArgumentNullException.ThrowIfNull(bindingSource);
 
 		if (bindingSource.CanAcceptDataFrom(BindingSource))
-		{
 			return this;
-		}
 		else
-		{
 			return null;
-		}
 	}
 
 	public virtual object? GetModel(string key, Type t)

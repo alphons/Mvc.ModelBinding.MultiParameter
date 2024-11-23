@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Http.Metadata;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
-#nullable enable
-
 //
 // Summary:
 //     Specifies that a parameter or property should be bound using the request cookies.

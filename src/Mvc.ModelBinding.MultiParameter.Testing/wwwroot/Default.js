@@ -1,17 +1,22 @@
-﻿(function ()
+﻿onReady(() =>
 {
 	PageEvents();
 	Init();
-})();
+
+});
 
 var result;
 
 function PageEvents()
 {
-	document.addEventListener("click", function (e)
+	document.on("click", async function (e)
 	{
-		if (typeof window[e.target.id] === "function")
-			window[e.target.id].call(e, e);
+		if (e.target.id && typeof window[e.target.id] === "function")
+		{
+			const result = window[e.target.id].call(e, e);
+			if (result instanceof Promise)
+				await result;
+		}
 	});
 
 	$id("UploadExample").on("change", function (e)
@@ -43,6 +48,10 @@ async function UnitTest()
 
 	var user = { user: 'alphons' };
 
+	r = await netproxyasync("./api/GetCookie");
+	C("Cookies", "r.Value == '1234'");
+	r = await netproxyasync("./api/GetHeader");
+	C("Headers (Accept)", "r.Value == '*/*'");
 	r = await netproxyasync("./api/SimpleString1", user);
 	C("SimpleString1", "r.user == 'alphons'");
 	r = await netproxyasync("./api/SimpleString2", user);
@@ -235,7 +244,7 @@ async function UnitTest()
 
 	C("NotANumber", "r.Value == 'NaN'");
 
-	C("ready", "true == false");
+	C("ready (must be false and red)", "true == false");
 }
 
 
@@ -323,5 +332,19 @@ async function MultiBinderTest()
 
 async function PostEnumAsString()
 {
-	var result = await netproxyasync("./api/PostEnumAsString", { status : 'Active' });
+	var result = await netproxyasync("./api/PostEnumAsString", { status: 'Active' });
+
+	$id("Result").innerText = ' status:' + result.Status + ' value:' + result.Value;
+}
+
+async function WriteCookie()
+{
+	await netproxyasync("./api/WriteCookie", { value: 'This is a cookie value' });
+}
+
+async function GetCookie()
+{
+	var result = await netproxyasync("./api/GetCookie");
+
+	$id("Result").innerText = "value from cookie is: " + result.Value;
 }

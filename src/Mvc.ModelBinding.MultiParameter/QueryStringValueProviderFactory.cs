@@ -1,8 +1,8 @@
 
 // QueryStringValueProviderFactory
 // (C) 2022 Alphons van der Heijden
-// Date: 2022-04-10
-// Version: 1.2
+// Version: 1.2 Date: 2022-04-10
+// Version: 1.3 Date: 2024-11-23
 
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
@@ -11,7 +11,6 @@ using System.Text.Json;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
-#nullable enable
 
 /// <summary>
 /// A <see cref="IValueProviderFactory"/> that creates <see cref="GenericValueProvider"/> instances that
@@ -33,12 +32,9 @@ public class QueryStringValueProviderFactory : IValueProviderFactory
     /// <inheritdoc />
     public Task CreateValueProviderAsync(ValueProviderFactoryContext context)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(ValueProviderFactoryContext));
-        }
+		ArgumentNullException.ThrowIfNull(context);
 
-        var query = context.ActionContext.HttpContext.Request.Query;
+		var query = context.ActionContext.HttpContext.Request.Query;
         if (query != null && query.Count > 0)
         {
             var list = query.Select(x => $"\"{x.Key}\": \"{x.Value}\"").ToArray();

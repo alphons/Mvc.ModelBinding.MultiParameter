@@ -1,8 +1,8 @@
 
 // GenericValueProvider
 // (C) 2022 Alphons van der Heijden
-// Date: 2022-04-10
-// Version: 1.2
+// Version: 1.2 Date: 2022-04-10
+// Version: 1.3 Date: 2024-11-23
 
 using System.Text.Json;
 using System.ComponentModel;
@@ -11,39 +11,28 @@ using Microsoft.AspNetCore.Http;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
-#nullable enable
-
-public class GenericValueProvider : BindingSourceValueProvider
+public class GenericValueProvider(
+	BindingSource bindingSource, 
+	JsonDocument? jsonDocument, 
+	IFormCollection? form, 
+	JsonSerializerOptions? options) : BindingSourceValueProvider(bindingSource)
 {
-	private readonly JsonSerializerOptions? jsonSerializerOptions;
-	private readonly JsonDocument? jsonDocument;
-	private readonly IFormCollection? form;
-
-	public GenericValueProvider(BindingSource bindingSource, JsonDocument? jsonDocument, IFormCollection? form, JsonSerializerOptions? options) : base(bindingSource)
-	{
-		this.jsonSerializerOptions = options;
-
-		this.jsonDocument = jsonDocument;
-
-		this.form = form;
-	}
-
 	public override bool ContainsPrefix(string prefix)
 	{
 		//System.Diagnostics.Debug.WriteLine($"ContainsPrefix({prefix}) BIndingSource:{BindingSource.DisplayName}");
 
-		if (this.jsonDocument != null &&
-			this.jsonDocument.RootElement.ValueKind == JsonValueKind.Object &&
-			this.jsonDocument.RootElement.TryGetProperty(prefix, out _))
+		if (jsonDocument != null &&
+			jsonDocument.RootElement.ValueKind == JsonValueKind.Object &&
+			jsonDocument.RootElement.TryGetProperty(prefix, out _))
 			return true;
 
-		if (this.form != null)
+		if (form != null)
 		{
-			if (this.form.ContainsKey(prefix))
+			if (form.ContainsKey(prefix))
 				return true;
 
-			if (this.form.Files != null &&
-				this.form.Files.Any(x => x.Name == prefix))
+			if (form.Files != null &&
+				form.Files.Any(x => x.Name == prefix))
 				return true;
 		}
 
@@ -60,9 +49,9 @@ public class GenericValueProvider : BindingSourceValueProvider
 	{
 		//System.Diagnostics.Debug.WriteLine($"GetModel({key}) BIndingSource:{BindingSource.DisplayName}");
 
-		if (this.jsonDocument != null &&
-			this.jsonDocument.RootElement.ValueKind == JsonValueKind.Object &&
-			this.jsonDocument.RootElement.TryGetProperty(key, out JsonElement prop))
+		if (jsonDocument != null &&
+			jsonDocument.RootElement.ValueKind == JsonValueKind.Object &&
+			jsonDocument.RootElement.TryGetProperty(key, out JsonElement prop))
 		{
 			// this needs some tweaking!!!
 			if (t.IsEnum && prop.ValueKind == JsonValueKind.String)
@@ -73,29 +62,29 @@ public class GenericValueProvider : BindingSourceValueProvider
 			}
 			else if (prop.ValueKind != JsonValueKind.Array || t.IsArray || (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(List<>)))
 			{
-				return prop.Deserialize(t, this.jsonSerializerOptions);
+				return prop.Deserialize(t, options);
 			}
 			else
 			{
 				var first = prop.EnumerateArray().FirstOrDefault();
 				if (first.ValueKind != JsonValueKind.Null)
-					return first.Deserialize(t, this.jsonSerializerOptions);
+					return first.Deserialize(t, options);
 			}
 		}
 
-		if (this.form != null)
+		if (form != null)
 		{
-			if (this.form.ContainsKey(key))
+			if (form.ContainsKey(key))
 			{
 				var model = TypeDescriptor.GetConverter(t).ConvertFrom(
 				   context: null,
 				   culture: System.Globalization.CultureInfo.InvariantCulture,
-				   value: this.form[key][0]); // Needs some tweaking
+				   value: form[key].FirstOrDefault() ?? new object()); // Needs some tweaking
 				return model;
 			}
 
-			if (this.form.Files != null && t == typeof(IFormFile))
-				return this.form.Files.FirstOrDefault(x => x.Name == key);
+			if (form.Files != null && t == typeof(IFormFile))
+				return form.Files.FirstOrDefault(x => x.Name == key);
 		}
 		return null;
 	}

@@ -1,8 +1,8 @@
 ﻿
 // FormValueProviderFactory
 // (C) 2022 Alphons van der Heijden
-// Date: 2022-04-10
-// Version: 1.2
+// Version: 1.2 Date: 2022-04-10
+// Version: 1.3 Date: 2024-11-23
 
 using System.Text.Json;
 
@@ -12,8 +12,6 @@ using Microsoft.AspNetCore.Http;
 // The .NET Foundation licenses this file to you under the MIT license.
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
-
-#nullable enable
 
 /// <summary>
 /// A <see cref="IValueProviderFactory"/> for <see cref="GenericValueProvider"/>.
@@ -34,10 +32,7 @@ public class FormValueProviderFactory : IValueProviderFactory
 	/// <inheritdoc />
 	public Task CreateValueProviderAsync(ValueProviderFactoryContext context)
 	{
-		if (context == null)
-		{
-			throw new ArgumentNullException(nameof(context));
-		}
+		ArgumentNullException.ThrowIfNull(context);
 
 		var request = context.ActionContext.HttpContext.Request;
 		if (request.HasFormContentType)

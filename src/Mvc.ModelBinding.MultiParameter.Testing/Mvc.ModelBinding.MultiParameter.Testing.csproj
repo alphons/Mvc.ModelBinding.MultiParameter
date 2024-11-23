@@ -7,7 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="netproxy" Version="1.1.4" />
+	  <PackageReference Include="netproxy" Version="3.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>

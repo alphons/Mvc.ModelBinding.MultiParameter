@@ -1,14 +1,13 @@
 ﻿
 // GenericModelBinder
 // (C) 2022 Alphons van der Heijden
-// Date: 2022-04-10
-// Version: 1.2
+// Version: 1.2 Date: 2022-04-10
+// Version: 1.3 Date: 2024-11-23
 
 using System.Runtime.ExceptionServices;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
-#nullable enable
 
 /// <summary>
 /// An <see cref="IGetModelProvider"/> sufficient for most objects.
@@ -28,16 +27,15 @@ public class GenericModelBinder : IModelBinder
 
 	public Task BindModelAsync(ModelBindingContext bindingContext)
 	{
-		if (bindingContext == null)
-			throw new ArgumentNullException(nameof(ModelBindingContext));
+		ArgumentNullException.ThrowIfNull(bindingContext);
 
 		var defaultContext = bindingContext as DefaultModelBindingContext;
-		if (defaultContext == null)
-			throw new ArgumentNullException(nameof(DefaultModelBindingContext));
+
+		ArgumentNullException.ThrowIfNull(defaultContext);
 
 		var compositeValueProvider = defaultContext.OriginalValueProvider as CompositeValueProvider;
-		if (compositeValueProvider == null)
-			throw new ArgumentNullException(nameof(CompositeValueProvider));
+
+		ArgumentNullException.ThrowIfNull(compositeValueProvider);
 
 		var bindingSource = bindingContext.BindingSource == BindingSource.FormFile ? BindingSource.Form :
 			bindingContext.BindingSource;
@@ -92,10 +90,7 @@ public class GenericModelBinderProvider : IModelBinderProvider
 {
 	public IModelBinder? GetBinder(ModelBinderProviderContext context)
 	{
-		if (context == null)
-		{
-			throw new ArgumentNullException(nameof(context));
-		}
+		ArgumentNullException.ThrowIfNull(context);
 
 		return new GenericModelBinder(context.Metadata.ModelType);
 	}
