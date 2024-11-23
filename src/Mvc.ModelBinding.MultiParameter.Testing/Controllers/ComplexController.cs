@@ -30,6 +30,14 @@ public class ApiController : ControllerBase
 		});
 	}
 
+	[HttpGet("~/api/QueryString")]
+	public IActionResult QueryString(string question)
+	{
+		return Ok(new
+		{
+			Value = question
+		});
+	}
 
 	[HttpGet("index")]
 	// 1.0
@@ -578,6 +586,17 @@ public class ApiController : ControllerBase
 		return Ok(new
 		{
 			Value = mycookie
+		});
+	}
+
+	[HttpPost("~/api/PostIt")]
+	public IActionResult PostIt(string Name, int Age)
+	{
+		
+		return Ok(new
+		{
+			Name,
+			Age
 		});
 	}
 }

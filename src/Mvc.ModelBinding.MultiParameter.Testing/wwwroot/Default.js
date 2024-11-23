@@ -1,11 +1,11 @@
-﻿onReady(() =>
+﻿const result = $id('Result');
+var r, result1, result2;
+
+onReady(() =>
 {
 	PageEvents();
 	Init();
-
 });
-
-var result;
 
 function PageEvents()
 {
@@ -13,9 +13,9 @@ function PageEvents()
 	{
 		if (e.target.id && typeof window[e.target.id] === "function")
 		{
-			const result = window[e.target.id].call(e, e);
-			if (result instanceof Promise)
-				await result;
+			const func = window[e.target.id].call(e, e);
+			if (func instanceof Promise)
+				await func;
 		}
 	});
 
@@ -27,12 +27,8 @@ function PageEvents()
 
 function Init()
 {
-	result = $id('Result');
 	netproxy("./api/HelloWorld"); // Makes session (and cookie)
 }
-
-var r;
-var result1,result2;
 
 function C(s, jscript)
 {
@@ -52,6 +48,15 @@ async function UnitTest()
 	C("Cookies", "r.Value == '1234'");
 	r = await netproxyasync("./api/GetHeader");
 	C("Headers (Accept)", "r.Value == '*/*'");
+	r = await netproxyasync("./api/QueryString?question=answer");
+	C("QueryString", "r.Value == 'answer'");
+
+	var formData = new FormData();
+	formData.append("Name", "Alphons");
+	formData.append("Age", "25")
+	r = await netproxyasync("/api/PostIt", formData);
+	C("Post Form Data", "r.Name == 'Alphons' && r.Age ==25");
+
 	r = await netproxyasync("./api/SimpleString1", user);
 	C("SimpleString1", "r.user == 'alphons'");
 	r = await netproxyasync("./api/SimpleString2", user);
@@ -60,6 +65,9 @@ async function UnitTest()
 	C("SimpleString3", "r.user == 'alphons'");
 	r = await netproxyasync("./api/SimpleString4", { model: { user: 'alphons' } });
 	C("SimpleString4", "r.user == 'alphons'");
+
+	r = await netproxyasync("./api/PostEnumAsString", { status: 'Active' });
+	C("PostEnumAsString", "r.Status == 'Active' && r.Value == 1");
 
 	var users = { "users": ["admins", "editors", null, "sisters"] };
 
@@ -270,14 +278,14 @@ function ProgressHandler(event)
 	var total = event.total;
 	if (event.lengthComputable)
 		percent = Math.ceil(position / total * 100);
-	$id("Result").innerText = "Uploading " + percent + "%";
+	result.innerText = "Uploading " + percent + "%";
 }
 
 function StartUpload(e)
 {
 	var file = e.target.files[0];
 
-	$id("Result").innerText = 'Uploading';
+	result.innerText = 'Uploading';
 
 	var formData = new FormData();
 
@@ -286,13 +294,13 @@ function StartUpload(e)
 
 	netproxy("/api/Upload", formData, function ()
 	{
-		$id("Result").innerText = 'Ready Length:' + this.Length + " ExtraValue:" + this.Form1;
+		result.innerText = 'Ready Length:' + this.Length + " ExtraValue:" + this.Form1;
 	}, window.NetProxyErrorHandler, ProgressHandler);
 }
 
 async function MultiBinderTest()
 {
-	$id("Result").innerText = '';
+	result.innerText = '';
 	result1 = await netproxyasync("./api/DemoProposal/two?SomeParameter3=three&SomeParameter6=six",
 	{
 		"SomeParameter4": // Now the beast has a name
@@ -308,7 +316,7 @@ async function MultiBinderTest()
 		"SomeParameter5": "five" // double binder
 	});
 
-	$id("Result").innerText = 'some alias: ' + result1.SomeParameter4.Users[0][0].Alias[1];
+	result.innerText = 'some alias: ' + result1.SomeParameter4.Users[0][0].Alias[1];
 
 	result2 = await netproxyasync("./api/DemoProposal2/two?SomeParameter3=three&SomeParameter6=six",
 	{
@@ -325,26 +333,17 @@ async function MultiBinderTest()
 		"SomeParameter5": "five" // double binder
 	});
 
-	$id("Result").innerText += ' other alias: ' + result2.SomeParameter4.Users[0][0].Alias[2];
+	result.innerText += ' other alias: ' + result2.SomeParameter4.Users[0][0].Alias[2];
 
 }
 
-
-async function PostEnumAsString()
+async function PostIt()
 {
-	var result = await netproxyasync("./api/PostEnumAsString", { status: 'Active' });
+	var formData = new FormData();
 
-	$id("Result").innerText = ' status:' + result.Status + ' value:' + result.Value;
-}
+	formData.append("Name", "Alphons");
+	formData.append("Age", "25")
 
-async function WriteCookie()
-{
-	await netproxyasync("./api/WriteCookie", { value: 'This is a cookie value' });
-}
+	var r = netproxyasync("/api/PostIt", formData);
 
-async function GetCookie()
-{
-	var result = await netproxyasync("./api/GetCookie");
-
-	$id("Result").innerText = "value from cookie is: " + result.Value;
 }
