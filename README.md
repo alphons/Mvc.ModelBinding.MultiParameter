@@ -2,45 +2,41 @@
 
 Nuget package https://www.nuget.org/packages/Mvc.ModelBinding.MultiParameter/
 
-Calling controller methods using multiple parameter binding.
+Calling controller methods using multiple unique parameters.
 
 ```c#
-[HttpPost]
-[Route("~/api/SomeMethod/{SomeParameter2}")]
-public async Task<IActionResult> SomeMethod(
-	[FromCooky(Name = ".AspNetCore.Session")] string SomeParameter0, // #######
-	[FromHeader(Name = "Referer")] string SomeParameter1,	// "https://localhost:44346/"
-	[FromRoute] string SomeParameter2,			// "two"
-	[FromQuery] string SomeParameter3,			// "three"
-	[FromBody] ApiModel SomeParameter4,			//  {four}
-	[FromBody] string SomeParameter5,			//  "five" (multi binding FromBody)
-	[FromQuery]string SomeParameter6)			//  "six" (multi binding FromQuery)
-{
-	await Task.Yield();
-	return Ok();
-}
-```
-And if parameter names are unique this can be simplified to:
-```c#
-[HttpPost]
-[Route("~/api/OtherMethod/{SomeParameter2}")]
-public async Task<IActionResult> OtherMethod(
-	string Referer,			// "https://localhost:44346/"
+[HttpPost("~/api/SomeMethod/{SomeParameter2}")]
+public IActionResult SomeMethod(
+	string Referer,			    // "https://localhost:44346/"
 	string SomeParameter2,		// "two"
 	string SomeParameter3,		// "three"
 	ApiModel SomeParameter4,	//  {four}
-	string SomeParameter5,		//  "five" (multi binding FromBody)
-	string SomeParameter6)		//  "six" (multi binding FromQuery)
+	double SomeParameter5,		//  5.5 (multi binding FromBody)
+	int SomeParameter6)		    //  6 (multi binding FromQuery)
 {
-	await Task.Yield();
 	return Ok();
 }
 ```
+Using attributes to emphasize the source:
+```c#
+[HttpPost]
+[Route("~/api/OtherMethod/{SomeParameter2}")]
+public IActionResult OtherMethod(
+	[FromCooky(Name = ".AspNetCore.Session")] string SomeParameter0, // #######
+	[FromHeader(Name = "Referer")] string SomeParameter1,	// "https://localhost:44346/"
+	[FromRoute] string SomeParameter2,	// "two"
+	[FromQuery] string SomeParameter3,	// "three"
+	[FromBody] ApiModel SomeParameter4,	//  {four}
+	[FromBody] double SomeParameter5,	//  5.5 (multi binding FromBody)
+	[FromQuery] int SomeParameter6)		//  6 (multi binding FromQuery)
+{
+	return Ok();
+}
 
 This test uses `netproxy` javascript caller for posting Json to controllers.
 
 ```javascript
-r = await netproxyasync("./api/SomeMethod/two?SomeParameter3=three&SomeParameter6=six",
+r = await netproxyasync("./api/SomeMethod/two?SomeParameter3=three&SomeParameter6=6",
 {
   "SomeParameter4": // Now the beast has a name
   {
@@ -52,7 +48,7 @@ r = await netproxyasync("./api/SomeMethod/two?SomeParameter3=three&SomeParameter
       [{ Name: "User20" }, { Name: "User21" }]
     ]
   },
-  "SomeParameter5": "five" // double binder
+  "SomeParameter5": 5.5 // double binder
 });
 ```
 

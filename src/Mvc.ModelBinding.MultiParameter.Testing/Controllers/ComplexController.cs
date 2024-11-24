@@ -306,7 +306,6 @@ public class ApiController : ControllerBase
 		});
 	}
 
-
 	[HttpPost("~/api/ComplexString")]
 	public async Task<IActionResult> ComplexString(string Name)
 	{
