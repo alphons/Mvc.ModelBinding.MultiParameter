@@ -1,5 +1,3 @@
-
-
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
     // the 'real' root of the application
@@ -11,8 +9,6 @@ builder.Services.AddMvcCore().WithMultiParameterModelBinding(SanitizeAll: true);
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession();
-
-
 
 var app = builder.Build();
 

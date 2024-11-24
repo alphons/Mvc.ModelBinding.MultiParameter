@@ -45,8 +45,6 @@ public class GenericValueProvider(
 	/// <returns>null or object model of type</returns>
 	public object? GetModel(string key, Type t)
 	{
-		//System.Diagnostics.Debug.WriteLine($"GetModel({key}) BIndingSource:{BindingSource.DisplayName}");
-
 		if (jsonDocument != null &&
 			jsonDocument.RootElement.ValueKind == JsonValueKind.Object &&
 			jsonDocument.RootElement.TryGetProperty(key, out JsonElement prop))

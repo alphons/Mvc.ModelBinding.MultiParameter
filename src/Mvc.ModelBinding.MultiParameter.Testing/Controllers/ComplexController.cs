@@ -501,19 +501,29 @@ public class ApiController : ControllerBase
 	[RequestFormLimits(MultipartBodyLengthLimit = 2_500_000_000)]
 	public async Task<IActionResult> Upload(IFormFile file, string Form1)
 	{
-		long Length = -1;
-		if (file != null && file.Length > 0)
-		{
-			Length = file.Length;
-			using var ms = new MemoryStream();
-			await file.CopyToAsync(ms); // some dummy operation
+		if (file?.Length == 0)
+			return BadRequest("No file uploaded or file is empty.");
 
-		}
-		return Ok(new
+		try
 		{
-			Length,
-			Form1
-		});
+			var Length = file.Length;
+			var filePath = Path.GetTempFileName();
+
+			using (var stream = new FileStream(filePath, FileMode.Create))	
+				await file.CopyToAsync(stream);
+
+			return Ok(new
+			{
+				Form1,
+				Length,
+				filePath
+			});
+		}
+		catch (Exception ex)
+		{
+			return StatusCode(500, new { Message = "An error occurred while uploading the file.", Error = ex.Message });
+		}
+
 	}
 
 	public enum AddressEnum

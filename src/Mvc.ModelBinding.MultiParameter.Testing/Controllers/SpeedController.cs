@@ -42,4 +42,46 @@ public class SpeedController : ControllerBase
 	}
 
 
+	// Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
+	public class Address
+	{
+		public string street { get; set; }
+		public string city { get; set; }
+		public string zipcode { get; set; }
+	}
+
+	public class Metadata
+	{
+		public int totalCount { get; set; }
+		public DateTime generatedAt { get; set; }
+	}
+
+	public class Preferences
+	{
+		public string theme { get; set; }
+		public bool notifications { get; set; }
+	}
+
+	public class LargeObject
+	{
+		public List<User> users { get; set; }
+		public Metadata metadata { get; set; }
+	}
+
+	public class User
+	{
+		public int id { get; set; }
+		public string name { get; set; }
+		public string email { get; set; }
+		public Address address { get; set; }
+		public Preferences preferences { get; set; }
+	}
+
+
+	[HttpPost("~/api/LargeJson")]
+	public IActionResult LargeJson(LargeObject largeJson)
+	{
+		return Ok();
+	}
+
 }

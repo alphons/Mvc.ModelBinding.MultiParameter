@@ -14,6 +14,33 @@ const input = {
 	"SomeParameter5": 5.5 // double binder
 };
 
+const largeJson = { users: [], metadata: {} };
+
+for (let i = 1; i <= 1000; i++)
+{
+	largeJson.users.push({
+		id: i,
+		name: `User ${i}`,
+		email: `user${i}@example.com`,
+		address: {
+			street: `${i} Example Rd`,
+			city: "CityName",
+			zipcode: `ZIP${i}`
+		},
+		preferences: {
+			theme: i % 2 === 0 ? "dark" : "light",
+			notifications: i % 3 === 0
+		}
+	});
+}
+
+largeJson.metadata = {
+	totalCount: largeJson.users.length,
+	generatedAt: new Date().toISOString()
+};
+
+
+//console.log(JSON.stringify(largeJson));
 
 onReady(() =>
 {
@@ -51,5 +78,10 @@ async function SpeedTest()
 async function MultiBinderTest()
 {
 	const result = await netproxyasync("./api/Speedtest/two?SomeParameter3=three&SomeParameter6=6", input);
-
 }
+
+async function LargeJson()
+{
+	await netproxyasync("./api/LargeJson", { largeJson: largeJson });
+}
+
