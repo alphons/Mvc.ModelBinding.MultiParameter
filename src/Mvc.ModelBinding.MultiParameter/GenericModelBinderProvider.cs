@@ -24,13 +24,13 @@ public class GenericModelBinder(Type type) : IModelBinder
 			bindingContext.BindingSource;
 
 		var iBindingGetModelProviders = compositeValueProvider
-			.Where(x => x is IBindingSourceValueProvider provider &&
+			.Where(x => x is IGenericValueProvider provider &&
 			(bindingSource == null || provider.Filter(bindingSource) != null))
-			.Select(x => x as IBindingSourceValueProvider)
+			.Select(x => x as IGenericValueProvider)
 			.ToList();
 
 		if (iBindingGetModelProviders.FirstOrDefault(x => x != null &&
-		x.ContainsPrefix(defaultContext.OriginalModelName)) is not IBindingSourceValueProvider getModelProvider)
+		x.ContainsPrefix(defaultContext.OriginalModelName)) is not IGenericValueProvider getModelProvider)
 		{
 			return Task.CompletedTask; // Failed
 		}

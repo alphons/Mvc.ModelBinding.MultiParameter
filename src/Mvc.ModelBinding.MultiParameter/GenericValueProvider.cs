@@ -5,11 +5,18 @@ using Microsoft.AspNetCore.Http;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
+public interface IGenericValueProvider : IValueProvider
+{
+	IValueProvider? Filter(BindingSource bindingSource);
+
+	object? GetModel(string key, Type t);
+}
+
 public class GenericValueProvider(
 	BindingSource bindingSource, 
 	JsonDocument? jsonDocument, 
 	IFormCollection? formCollection, 
-	JsonSerializerOptions? jsonSerializerOptions) : IBindingSourceValueProvider
+	JsonSerializerOptions? jsonSerializerOptions) : IGenericValueProvider
 {
 	public ValueProviderResult GetValue(string key) => 
 		ValueProviderResult.None;
