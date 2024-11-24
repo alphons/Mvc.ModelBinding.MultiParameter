@@ -1,21 +1,8 @@
 
-// QueryStringValueProviderFactory
-// (C) 2022 Alphons van der Heijden
-// Version: 1.2 Date: 2022-04-10
-// Version: 1.3 Date: 2024-11-23
-
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
 using System.Text.Json;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
-
-/// <summary>
-/// A <see cref="IValueProviderFactory"/> that creates <see cref="GenericValueProvider"/> instances that
-/// read values from the request query-string.
-/// </summary>
 public class QueryStringValueProviderFactory(JsonSerializerOptions? jsonSerializerOptions) : IValueProviderFactory
 {
 	/// <inheritdoc />

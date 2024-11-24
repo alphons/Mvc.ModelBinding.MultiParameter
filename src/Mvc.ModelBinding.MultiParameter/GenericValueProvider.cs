@@ -1,9 +1,3 @@
-
-// GenericValueProvider
-// (C) 2022 Alphons van der Heijden
-// Version: 1.2 Date: 2022-04-10
-// Version: 1.3 Date: 2024-11-23
-
 using System.Text.Json;
 using System.ComponentModel;
 
@@ -15,12 +9,16 @@ public class GenericValueProvider(
 	BindingSource bindingSource, 
 	JsonDocument? jsonDocument, 
 	IFormCollection? formCollection, 
-	JsonSerializerOptions? jsonSerializerOptions) : BindingSourceValueProvider(bindingSource)
+	JsonSerializerOptions? jsonSerializerOptions) : IBindingSourceValueProvider
 {
-	public override bool ContainsPrefix(string prefix)
-	{
-		//System.Diagnostics.Debug.WriteLine($"ContainsPrefix({prefix}) BIndingSource:{BindingSource.DisplayName}");
+	public ValueProviderResult GetValue(string key) => 
+		ValueProviderResult.None;
 
+	public IValueProvider? Filter(BindingSource bindingSourceFilter) => 
+		bindingSource.CanAcceptDataFrom(bindingSourceFilter) ? this : null;
+
+	public bool ContainsPrefix(string prefix)
+	{
 		if (jsonDocument != null &&
 			jsonDocument.RootElement.ValueKind == JsonValueKind.Object &&
 			jsonDocument.RootElement.TryGetProperty(prefix, out _))
@@ -45,7 +43,7 @@ public class GenericValueProvider(
 	/// <param name="key">name of the model</param>
 	/// <param name="t">type of the model</param>
 	/// <returns>null or object model of type</returns>
-	public override object? GetModel(string key, Type t)
+	public object? GetModel(string key, Type t)
 	{
 		//System.Diagnostics.Debug.WriteLine($"GetModel({key}) BIndingSource:{BindingSource.DisplayName}");
 
@@ -84,7 +82,9 @@ public class GenericValueProvider(
 			}
 
 			if (formCollection.Files != null && t == typeof(IFormFile))
+			{
 				return formCollection.Files.FirstOrDefault(x => x.Name == key);
+			}
 		}
 		return null;
 	}

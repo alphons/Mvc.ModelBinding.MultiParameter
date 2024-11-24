@@ -1,9 +1,4 @@
 
-// JsonValueProviderFactory
-// (C) 2022 Alphons van der Heijden
-// Version: 1.2 Date: 2022-04-10
-// Version: 1.3 Date: 2024-11-23
-
 using System.Text.Json;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
@@ -25,30 +20,28 @@ public class JsonValueProviderFactory(JsonSerializerOptions? jsonSerializerOptio
 		return Task.CompletedTask;
 	}
 
-	private async Task AddValueProviderAsync(ValueProviderFactoryContext context)
+	private async Task AddValueProviderAsync(ValueProviderFactoryContext? context)
 	{
-		var request = context.ActionContext.HttpContext.Request;
-		JsonDocument jsonDocument;
+		if (context?.ActionContext?.HttpContext?.Request?.Body is not Stream body)
+			return;
+
 		try
 		{
-			jsonDocument = await JsonDocument.ParseAsync(request.Body);
+			var jsonDocument = await JsonDocument.ParseAsync(body);
+
+			context.ValueProviders.Add(new GenericValueProvider(
+				BindingSource.Body,
+				jsonDocument: jsonDocument,
+				formCollection: null,
+				jsonSerializerOptions: jsonSerializerOptions));
 		}
 		catch (JsonException ex)
 		{
-			// ParseAsync can throw JsonException if the stream is no json element.
-			// Wrap it in a ValueProviderException that the CompositeValueProvider special cases.
-			throw new ValueProviderException(ex.Message, ex);
+			throw new ValueProviderException("Invalid JSON format.", ex);
 		}
 		catch (Exception ex)
 		{
-			// Wrap it in a ValueProviderException that the CompositeValueProvider special cases.
-			throw new ValueProviderException(ex.Message, ex);
+			throw new ValueProviderException("An error occurred while adding the value provider.", ex);
 		}
-
-		context.ValueProviders.Add(new GenericValueProvider(
-			BindingSource.Body,
-			jsonDocument: jsonDocument,
-			formCollection: null,
-			jsonSerializerOptions: jsonSerializerOptions));
 	}
 }

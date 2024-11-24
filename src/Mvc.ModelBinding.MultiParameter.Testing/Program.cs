@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
     ContentRootPath = AppDomain.CurrentDomain.BaseDirectory
 });
 
-builder.Services.AddMvcCore().WithMultiParameterModelBinding();
+builder.Services.AddMvcCore().WithMultiParameterModelBinding(SanitizeAll: true);
 
 builder.Services.AddDistributedMemoryCache();
 

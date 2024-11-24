@@ -1,10 +1,4 @@
-﻿
-// GenericModelBinder
-// (C) 2022 Alphons van der Heijden
-// Version: 1.2 Date: 2022-04-10
-// Version: 1.3 Date: 2024-11-23
-
-using System.Runtime.ExceptionServices;
+﻿using System.Runtime.ExceptionServices;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
@@ -12,19 +6,8 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 /// <summary>
 /// An <see cref="IGetModelProvider"/> sufficient for most objects.
 /// </summary>
-public class GenericModelBinder : IModelBinder
+public class GenericModelBinder(Type type) : IModelBinder
 {
-	private readonly Type type;
-
-	/// <summary>
-	/// Initializes a new instance of <see cref="GenericModelBinder"/>.
-	/// </summary>
-	/// <param name="type">The type to create binder for.</param>
-	public GenericModelBinder(Type type)
-	{
-		this.type = type ?? throw new ArgumentNullException(nameof(type));
-	}
-
 	public Task BindModelAsync(ModelBindingContext? bindingContext)
 	{
 		ArgumentNullException.ThrowIfNull(bindingContext);
@@ -55,7 +38,7 @@ public class GenericModelBinder : IModelBinder
 
 		try
 		{
-			var model = getModelProvider.GetModel(defaultContext.OriginalModelName, this.type);
+			var model = getModelProvider.GetModel(defaultContext.OriginalModelName, type);
 
 			bindingContext.Result = ModelBindingResult.Success(model);
 

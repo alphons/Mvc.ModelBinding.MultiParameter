@@ -1,15 +1,6 @@
-﻿
-// FormValueProviderFactory
-// (C) 2022 Alphons van der Heijden
-// Version: 1.2 Date: 2022-04-10
-// Version: 1.3 Date: 2024-11-23
-
-using System.Text.Json;
+﻿using System.Text.Json;
 
 using Microsoft.AspNetCore.Http;
-
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
@@ -21,9 +12,10 @@ public class FormValueProviderFactory(JsonSerializerOptions? jsonSerializerOptio
 	/// <inheritdoc />
 	public Task CreateValueProviderAsync(ValueProviderFactoryContext? context)
 	{
-		if (context?.ActionContext?.HttpContext?.Request is { HasFormContentType: true })
+		if (context?.ActionContext?.HttpContext?.Request is { HasFormContentType: true } )
 		{
 			// Allocating a Task only when the body is form data.
+
 			return AddValueProviderAsync(context);
 		}
 

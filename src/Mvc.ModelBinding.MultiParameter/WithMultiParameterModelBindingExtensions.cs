@@ -1,11 +1,4 @@
-﻿
-// WithMultiParameterBindingExtensions
-// (C) 2022 Alphons van der Heijden
-// Version: 1.2 Date: 2022-04-10
-// Version: 1.3 Date: 2024-11-23
-
-
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -21,19 +14,24 @@ public static class WithMultiParameterModelBindingExtensions
 	/// <param name="builder">IMvcCoreBuilder</param>
 	/// <param name="jsonSerializerOptions">JsonSerializerOptions</param>
 	/// <returns>IMvcCoreBuilder</returns>
-	public static IMvcCoreBuilder WithMultiParameterModelBinding(this IMvcCoreBuilder builder, JsonSerializerOptions? jsonSerializerOptions = null)
+	public static IMvcCoreBuilder WithMultiParameterModelBinding(this IMvcCoreBuilder builder, JsonSerializerOptions? jsonSerializerOptions = null, bool SanitizeAll = false)
 	{
 		return builder.AddMvcOptions(options =>
 		{
+			if (SanitizeAll)
+			{
+				options.InputFormatters.Clear();
+				options.ModelValidatorProviders.Clear();
+				options.Conventions.Clear();
+				options.Filters.Clear();
+				options.ModelMetadataDetailsProviders.Clear();
+				options.ModelValidatorProviders.Clear();
+				options.ModelMetadataDetailsProviders.Clear();
+				options.OutputFormatters.Clear();
+			}
+
 			options.InputFormatters.RemoveType<SystemTextJsonInputFormatter>();
 
-			//options.ModelValidatorProviders.Clear();
-			//options.Conventions.Clear();
-			//options.Filters.Clear();
-			//options.ModelMetadataDetailsProviders.Clear();
-			//options.ModelValidatorProviders.Clear();
-			//options.ModelMetadataDetailsProviders.Clear();
-			//options.OutputFormatters.Clear();
 
 			jsonSerializerOptions ??= new JsonSerializerOptions();
 
@@ -57,22 +55,12 @@ public static class WithMultiParameterModelBindingExtensions
 			options.ValueProviderFactories.Add(new RouteValueProviderFactory(jsonSerializerOptions));
 			options.ValueProviderFactories.Add(new FormValueProviderFactory(jsonSerializerOptions));
 
-			// Generic binder gettings complete de-serialized models of
-			// GenericValueProvider
+			// GenericModelBinderProvider gets de-serialized models of GenericValueProvider
 			options.ModelBinderProviders.Clear();
 			options.ModelBinderProviders.Add(new GenericModelBinderProvider());
 
-			// delete existing JsonOutputFormatter
-			for (int i = options.OutputFormatters.Count - 1; i >= 0; i--)
-			{
-				var formatter = options.OutputFormatters[i];
-				if (formatter.GetType() == typeof(SystemTextJsonOutputFormatter))
-				{
-					options.OutputFormatters.Remove(formatter);
-				}
-			}
-
-			// add new JsonOutputFormatter
+			// replace SystemTextJsonOutputFormatter having jsonSerializerOptions
+			options.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();
 			options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
 		});
 	}
