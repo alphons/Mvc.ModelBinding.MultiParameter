@@ -16,26 +16,12 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 /// <summary>
 /// A <see cref="IValueProviderFactory"/> for <see cref="GenericValueProvider"/>.
 /// </summary>
-public class FormValueProviderFactory : IValueProviderFactory
+public class FormValueProviderFactory(JsonSerializerOptions? jsonSerializerOptions) : IValueProviderFactory
 {
-	private readonly JsonSerializerOptions? jsonSerializerOptions;
-
-	public FormValueProviderFactory(JsonSerializerOptions? Options) : base()
-	{
-		this.jsonSerializerOptions = Options;
-	}
-	public FormValueProviderFactory()
-	{
-		this.jsonSerializerOptions = null;
-	}
-
 	/// <inheritdoc />
-	public Task CreateValueProviderAsync(ValueProviderFactoryContext context)
+	public Task CreateValueProviderAsync(ValueProviderFactoryContext? context)
 	{
-		ArgumentNullException.ThrowIfNull(context);
-
-		var request = context.ActionContext.HttpContext.Request;
-		if (request.HasFormContentType)
+		if (context?.ActionContext?.HttpContext?.Request is { HasFormContentType: true })
 		{
 			// Allocating a Task only when the body is form data.
 			return AddValueProviderAsync(context);
@@ -47,32 +33,27 @@ public class FormValueProviderFactory : IValueProviderFactory
 	private async Task AddValueProviderAsync(ValueProviderFactoryContext context)
 	{
 		var request = context.ActionContext.HttpContext.Request;
-		IFormCollection form;
+
+		IFormCollection formCollection;
 
 		try
 		{
-			form = await request.ReadFormAsync();
+			formCollection = await request.ReadFormAsync();
 		}
 		catch (InvalidDataException ex)
 		{
-			// ReadFormAsync can throw InvalidDataException if the form content is malformed.
-			// Wrap it in a ValueProviderException that the CompositeValueProvider special cases.
-			throw new ValueProviderException(ex.Message, ex);
+			throw new ValueProviderException("Malformed form content detected.", ex);
 		}
 		catch (IOException ex)
 		{
-			// ReadFormAsync can throw IOException if the client disconnects.
-			// Wrap it in a ValueProviderException that the CompositeValueProvider special cases.
-			throw new ValueProviderException(ex.Message, ex);
+			throw new ValueProviderException("Client disconnected during form reading.", ex);
 		}
 
-		var valueProvider = new GenericValueProvider(
+		context.ValueProviders.Add(new GenericValueProvider(
 			BindingSource.Form,
-			null,
-			form,
-			this.jsonSerializerOptions);
-
-		context.ValueProviders.Add(valueProvider);
+			jsonDocument: null,
+			formCollection: formCollection,
+			jsonSerializerOptions: jsonSerializerOptions));
 	}
 }
 

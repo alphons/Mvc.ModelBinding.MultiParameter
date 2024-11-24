@@ -7,8 +7,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Mvc.ModelBinding.MultiParameter;
-using System.Net;
 using System.Text.Json;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
@@ -18,40 +16,31 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 /// A <see cref="IValueProviderFactory"/> that creates <see cref="GenericValueProvider"/> instances that
 /// read values from the request query-string.
 /// </summary>
-public class QueryStringValueProviderFactory : IValueProviderFactory
+public class QueryStringValueProviderFactory(JsonSerializerOptions? jsonSerializerOptions) : IValueProviderFactory
 {
-	private readonly JsonSerializerOptions? jsonSerializerOptions;
-	public QueryStringValueProviderFactory(JsonSerializerOptions? Options) : base()
-	{
-		this.jsonSerializerOptions = Options;
-	}
-
-	public QueryStringValueProviderFactory()
-	{
-		this.jsonSerializerOptions = null;
-	}
-
 	/// <inheritdoc />
-	public Task CreateValueProviderAsync(ValueProviderFactoryContext context)
+	public Task CreateValueProviderAsync(ValueProviderFactoryContext? context)
 	{
-		ArgumentNullException.ThrowIfNull(context);
-
-		var query = context.ActionContext.HttpContext.Request.Query;
-		if (query != null && query.Count > 0)
+		if (context?.ActionContext?.HttpContext?.Request?.Query is { Count: > 0 } query)
 		{
-			var list = query
-				.Select(x => $"\"{Helper.EscapeForJson(x.Key)}\": \"{Helper.EscapeForJson(x.Value)}\"")
-				.ToArray();
-			var json = $"{{{string.Join(',', list)}}}";
-			var jsonDocument = JsonDocument.Parse(json, options: default);
+			var queryDictionary = query.ToDictionary(
+			pair => pair.Key,
+			pair => pair.Value.Count > 1
+				? pair.Value.ToArray()              // Convert multiple values to an array
+				: (object)pair.Value.ToString());   // Use a string for a single value
 
-			var valueProvider = new GenericValueProvider(
+
+			var jsonDocument = JsonDocument.Parse(
+				JsonSerializer.Serialize(
+					queryDictionary, 
+					jsonSerializerOptions));
+
+			context.ValueProviders.Add(new GenericValueProvider(
 				BindingSource.Query,
 				jsonDocument,
-				null,
-				this.jsonSerializerOptions);
-
-			context.ValueProviders.Add(valueProvider);
+				formCollection: null,
+				jsonSerializerOptions: jsonSerializerOptions
+			));
 		}
 
 		return Task.CompletedTask;

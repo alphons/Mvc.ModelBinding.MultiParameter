@@ -25,7 +25,7 @@ public class GenericModelBinder : IModelBinder
 		this.type = type ?? throw new ArgumentNullException(nameof(type));
 	}
 
-	public Task BindModelAsync(ModelBindingContext bindingContext)
+	public Task BindModelAsync(ModelBindingContext? bindingContext)
 	{
 		ArgumentNullException.ThrowIfNull(bindingContext);
 
@@ -88,7 +88,7 @@ public class GenericModelBinder : IModelBinder
 /// </summary>
 public class GenericModelBinderProvider : IModelBinderProvider
 {
-	public IModelBinder? GetBinder(ModelBinderProviderContext context)
+	public IModelBinder? GetBinder(ModelBinderProviderContext? context)
 	{
 		ArgumentNullException.ThrowIfNull(context);
 

@@ -43,7 +43,7 @@ async function SpeedTest()
 {
 	output.innerText = '';
 
-	const tasks = Array.from({ length: 50 }, () => MultiBinderTest());
+	const tasks = Array.from({ length: 4 }, () => MultiBinderTest());
 	await Promise.all(tasks);
 	console.log("All tasks completed");
 }

@@ -33,6 +33,7 @@ body
 		font-weight: 700;
 		padding: 0.7em 1.0em;
 		box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+		min-width:150px;
 	}
 
 	.ui-btn:hover
@@ -107,10 +108,9 @@ input, select
 
 input[type="file"]::-webkit-file-upload-button
 {
-	width: 0;
+	width:0;
 	padding-left: 0px;
 	padding-right: 0px;
-	padding-top: 0.4em;
 	border: none;
 }
 

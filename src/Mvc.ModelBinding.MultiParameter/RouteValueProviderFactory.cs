@@ -11,40 +11,27 @@ using System.Text.Json;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
-
 /// <summary>
 /// A <see cref="IValueProviderFactory"/> for creating <see cref="GenericValueProvider"/> instances.
 /// </summary>
-public class RouteValueProviderFactory : IValueProviderFactory
+public class RouteValueProviderFactory(JsonSerializerOptions? jsonSerializerOptions) : IValueProviderFactory
 {
-    private readonly JsonSerializerOptions? jsonSerializerOptions;
+	/// <inheritdoc />
+	public Task CreateValueProviderAsync(ValueProviderFactoryContext? context)
+	{
+		if (context?.ActionContext?.HttpContext?.Request?.RouteValues is { Count: > 0 } routeValues)
+		{
+			var jsonString = JsonSerializer.Serialize(routeValues, jsonSerializerOptions);
 
-    public RouteValueProviderFactory(JsonSerializerOptions? Options) : base()
-    {
-        this.jsonSerializerOptions = Options;
-    }
-    public RouteValueProviderFactory()
-    {
-        this.jsonSerializerOptions = null;
-    }
+			var jsonDocument = JsonDocument.Parse(jsonString);
 
-    /// <inheritdoc />
-    public Task CreateValueProviderAsync(ValueProviderFactoryContext context)
-    {
-		ArgumentNullException.ThrowIfNull(context);
+			context.ValueProviders.Add(new GenericValueProvider(
+				BindingSource.Path,
+				jsonDocument: jsonDocument,
+				formCollection: null,
+				jsonSerializerOptions: jsonSerializerOptions));
+		}
 
-        var request = context.ActionContext.HttpContext.Request;
-        var jsonString = JsonSerializer.Serialize(request.RouteValues);
-        var jsonDocument = JsonDocument.Parse(jsonString, options: default);
-
-        var valueProvider = new GenericValueProvider(
-            BindingSource.Path,
-            jsonDocument,
-            null,
-            this.jsonSerializerOptions);
-
-        context.ValueProviders.Add(valueProvider);
-
-        return Task.CompletedTask;
-    }
+		return Task.CompletedTask;
+	}
 }

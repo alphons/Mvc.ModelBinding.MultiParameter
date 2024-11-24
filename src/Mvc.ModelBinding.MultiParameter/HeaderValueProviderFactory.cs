@@ -9,35 +9,21 @@ using System.Text.Json;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
-public class HeaderValueProviderFactory : IValueProviderFactory
+public class HeaderValueProviderFactory(JsonSerializerOptions? jsonSerializerOptions) : IValueProviderFactory
 {
-	private readonly JsonSerializerOptions? jsonSerializerOptions;
-	public HeaderValueProviderFactory(JsonSerializerOptions? Options)
+	public Task CreateValueProviderAsync(ValueProviderFactoryContext? context)
 	{
-		this.jsonSerializerOptions = Options;
-	}
-	public HeaderValueProviderFactory()
-	{
-		this.jsonSerializerOptions = null;
-	}
-	public Task CreateValueProviderAsync(ValueProviderFactoryContext context)
-	{
-		ArgumentNullException.ThrowIfNull(context);
-
-		var headers = context.ActionContext.HttpContext.Request.Headers;
-		if (headers != null && headers.Count > 0)
+		if (context?.ActionContext?.HttpContext?.Request?.Headers is { Count: > 0 } headers)
 		{
-			var json = JsonSerializer.Serialize(headers);
+			var json = JsonSerializer.Serialize(headers, jsonSerializerOptions);
 
-			var jsonDocument = JsonDocument.Parse(json, options: default);
+			var jsonDocument = JsonDocument.Parse(json);
 
-			var valueProvider = new GenericValueProvider(
+			context.ValueProviders.Add(new GenericValueProvider(
 				BindingSource.Header,
-				jsonDocument,
-				null,
-				jsonSerializerOptions);
-
-			context.ValueProviders.Add(valueProvider);
+				jsonDocument: jsonDocument,
+				formCollection: null,
+				jsonSerializerOptions: jsonSerializerOptions));
 		}
 
 		return Task.CompletedTask;

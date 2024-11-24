@@ -9,12 +9,13 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 public abstract class BindingSourceValueProvider : IBindingSourceValueProvider
 {
 	/// <summary>
-	/// Creates a new <see cref="BindingGetModelProvider"/>.
+	/// Initializes a new instance of the <see cref="BindingSourceValueProvider"/> class.
 	/// </summary>
 	/// <param name="bindingSource">
-	/// The <see cref="ModelBinding.BindingSource"/>. Must be a single-source (non-composite) with
-	/// <see cref="BindingSource.IsGreedy"/> equal to <c>false</c>.
+	/// The <see cref="BindingSource"/> associated with this provider. 
+	/// Must be a single-source (non-composite) with <see cref="BindingSource.IsGreedy"/> set to <c>false</c>.
 	/// </param>
+	/// <exception cref="ArgumentNullException">Thrown when <paramref name="bindingSource"/> is null.</exception>
 	public BindingSourceValueProvider(BindingSource bindingSource)
 	{
 		ArgumentNullException.ThrowIfNull(bindingSource);
@@ -41,10 +42,7 @@ public abstract class BindingSourceValueProvider : IBindingSourceValueProvider
 	{
 		ArgumentNullException.ThrowIfNull(bindingSource);
 
-		if (bindingSource.CanAcceptDataFrom(BindingSource))
-			return this;
-		else
-			return null;
+		return bindingSource.CanAcceptDataFrom(BindingSource) ? this : null;
 	}
 
 	public virtual object? GetModel(string key, Type t)

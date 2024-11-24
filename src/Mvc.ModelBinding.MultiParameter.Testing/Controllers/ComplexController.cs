@@ -579,9 +579,8 @@ public class ApiController : ControllerBase
 	/// <param name="mycookie">the name of the var must the name of the cookie</param>
 	/// <returns></returns>
 	[HttpGet("~/api/GetCookie")]
-	public async Task<IActionResult> GetCookie(string mycookie)
+	public IActionResult GetCookie(string mycookie)
 	{
-		await Task.Yield();
 		return Ok(new
 		{
 			Value = mycookie

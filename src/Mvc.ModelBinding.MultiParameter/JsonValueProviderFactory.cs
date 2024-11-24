@@ -8,35 +8,20 @@ using System.Text.Json;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
-public class JsonValueProviderFactory : IValueProviderFactory
+public class JsonValueProviderFactory(JsonSerializerOptions? jsonSerializerOptions) : IValueProviderFactory
 {
-	private readonly JsonSerializerOptions? jsonSerializerOptions;
-	public JsonValueProviderFactory(JsonSerializerOptions? Options)
+	public Task CreateValueProviderAsync(ValueProviderFactoryContext? context)
 	{
-		this.jsonSerializerOptions = Options;
-	}
-	public JsonValueProviderFactory()
-	{
-		this.jsonSerializerOptions = null;
-	}
-	public Task CreateValueProviderAsync(ValueProviderFactoryContext context)
-	{
-		ArgumentNullException.ThrowIfNull(context);
-
-		var request = context.ActionContext.HttpContext.Request;
-
-		if (request.Method == "POST")
+		if (context?.ActionContext?.HttpContext?.Request is { Method: "POST" } request)
 		{
-			if (request.ContentType == null || request.ContentType.StartsWith("application/json"))
+			if ((request.ContentType == null || 
+				request.ContentType.StartsWith("application/json"))
+				&& (request.ContentLength == null || 
+				request.ContentLength >= 2)) // matches an empty "{}" post
 			{
-				if (request.ContentLength == null || // Chunked encoding
-					request.ContentLength >= 2) // Normal encoding, using content length minimum '{}'
-				{
-					return AddValueProviderAsync(context);
-				}
+				return AddValueProviderAsync(context);
 			}
 		}
-
 		return Task.CompletedTask;
 	}
 
@@ -60,12 +45,10 @@ public class JsonValueProviderFactory : IValueProviderFactory
 			throw new ValueProviderException(ex.Message, ex);
 		}
 
-		var valueProvider = new GenericValueProvider(
+		context.ValueProviders.Add(new GenericValueProvider(
 			BindingSource.Body,
-			jsonDocument,
-			null,
-			jsonSerializerOptions);
-
-		context.ValueProviders.Add(valueProvider);
+			jsonDocument: jsonDocument,
+			formCollection: null,
+			jsonSerializerOptions: jsonSerializerOptions));
 	}
 }

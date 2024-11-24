@@ -14,8 +14,8 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 public class GenericValueProvider(
 	BindingSource bindingSource, 
 	JsonDocument? jsonDocument, 
-	IFormCollection? form, 
-	JsonSerializerOptions? options) : BindingSourceValueProvider(bindingSource)
+	IFormCollection? formCollection, 
+	JsonSerializerOptions? jsonSerializerOptions) : BindingSourceValueProvider(bindingSource)
 {
 	public override bool ContainsPrefix(string prefix)
 	{
@@ -26,13 +26,13 @@ public class GenericValueProvider(
 			jsonDocument.RootElement.TryGetProperty(prefix, out _))
 			return true;
 
-		if (form != null)
+		if (formCollection != null)
 		{
-			if (form.ContainsKey(prefix))
+			if (formCollection.ContainsKey(prefix))
 				return true;
 
-			if (form.Files != null &&
-				form.Files.Any(x => x.Name == prefix))
+			if (formCollection.Files != null &&
+				formCollection.Files.Any(x => x.Name == prefix))
 				return true;
 		}
 
@@ -62,29 +62,29 @@ public class GenericValueProvider(
 			}
 			else if (prop.ValueKind != JsonValueKind.Array || t.IsArray || (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(List<>)))
 			{
-				return prop.Deserialize(t, options);
+				return prop.Deserialize(t, jsonSerializerOptions);
 			}
 			else
 			{
 				var first = prop.EnumerateArray().FirstOrDefault();
 				if (first.ValueKind != JsonValueKind.Null)
-					return first.Deserialize(t, options);
+					return first.Deserialize(t, jsonSerializerOptions);
 			}
 		}
 
-		if (form != null)
+		if (formCollection != null)
 		{
-			if (form.ContainsKey(key))
+			if (formCollection.ContainsKey(key))
 			{
 				var model = TypeDescriptor.GetConverter(t).ConvertFrom(
 				   context: null,
 				   culture: System.Globalization.CultureInfo.InvariantCulture,
-				   value: form[key].FirstOrDefault() ?? new object()); // Needs some tweaking
+				   value: formCollection[key].FirstOrDefault() ?? new object()); // Needs some tweaking
 				return model;
 			}
 
-			if (form.Files != null && t == typeof(IFormFile))
-				return form.Files.FirstOrDefault(x => x.Name == key);
+			if (formCollection.Files != null && t == typeof(IFormFile))
+				return formCollection.Files.FirstOrDefault(x => x.Name == key);
 		}
 		return null;
 	}
