@@ -499,18 +499,18 @@ public class ApiController : ControllerBase
 	[HttpPost("~/api/Upload")]
 	[RequestSizeLimit(2_500_000_000)]
 	[RequestFormLimits(MultipartBodyLengthLimit = 2_500_000_000)]
-	public async Task<IActionResult> Upload(IFormFile file, string Form1)
+	public async Task<IActionResult> Upload(List<IFormFile> files, string Form1)
 	{
-		if (file?.Length == 0)
+		if (files?.Count == 0)
 			return BadRequest("No file uploaded or file is empty.");
 
 		try
 		{
-			var Length = file.Length;
+			var Length = files.Count;
 			var filePath = Path.GetTempFileName();
 
 			using (var stream = new FileStream(filePath, FileMode.Create))	
-				await file.CopyToAsync(stream);
+				await files[0].CopyToAsync(stream);
 
 			return Ok(new
 			{

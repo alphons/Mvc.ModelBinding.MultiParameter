@@ -13,15 +13,15 @@ public interface IGenericValueProvider : IValueProvider
 }
 
 public class GenericValueProvider(
-	BindingSource bindingSource, 
-	JsonDocument? jsonDocument, 
-	IFormCollection? formCollection, 
+	BindingSource bindingSource,
+	JsonDocument? jsonDocument,
+	IFormCollection? formCollection,
 	JsonSerializerOptions? jsonSerializerOptions) : IGenericValueProvider
 {
-	public ValueProviderResult GetValue(string key) => 
+	public ValueProviderResult GetValue(string key) =>
 		ValueProviderResult.None;
 
-	public IValueProvider? Filter(BindingSource bindingSourceFilter) => 
+	public IValueProvider? Filter(BindingSource bindingSourceFilter) =>
 		bindingSource.CanAcceptDataFrom(bindingSourceFilter) ? this : null;
 
 	public bool ContainsPrefix(string prefix)
@@ -86,9 +86,12 @@ public class GenericValueProvider(
 				return model;
 			}
 
-			if (formCollection.Files != null && t == typeof(IFormFile))
+			if (formCollection.Files != null)
 			{
-				return formCollection.Files.FirstOrDefault(x => x.Name == key);
+				if (t == typeof(IFormFile))
+					return formCollection.Files.FirstOrDefault(x => x.Name == key);
+				else
+					return formCollection.Files;
 			}
 		}
 		return null;

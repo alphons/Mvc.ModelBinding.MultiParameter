@@ -33,5 +33,11 @@
 
 	<div><a href="speedtest.html" class="ui-btn">SpeedTest</a></div>
 
+	<form action="/api/upload" method="post" enctype="multipart/form-data">
+		<label for="files">Select multiple files:</label>
+		<input type="file" name="files" id="files" multiple>
+		<button type="submit">Upload</button>
+	</form>
+
 </body>
 </html>

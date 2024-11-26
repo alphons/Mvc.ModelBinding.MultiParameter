@@ -289,7 +289,8 @@ function StartUpload(e)
 
 	var formData = new FormData();
 
- 	formData.append("file", file, file.name);
+ 	formData.append("files", file, file.name);
+	formData.append("files", file, file.name);
 	formData.append("Form1", "another var");
 
 	netproxy("/api/Upload", formData, function ()
