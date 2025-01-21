@@ -32,7 +32,7 @@ public IActionResult OtherMethod(
 {
 	return Ok();
 }
-
+```
 This test uses `netproxy` javascript caller for posting Json to controllers.
 
 ```javascript
