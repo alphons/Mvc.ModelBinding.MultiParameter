@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Mvc.ModelBinding.MultiParameter;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -56,7 +57,9 @@ public static class WithMultiParameterModelBindingExtensions
 			options.ValueProviderFactories.Add(new FormValueProviderFactory(jsonSerializerOptions));
 
 			// GenericModelBinderProvider gets de-serialized models of GenericValueProvider
+			// 2025-02-25: Restore CancellationTokenModelBinderProvider
 			options.ModelBinderProviders.Clear();
+			options.ModelBinderProviders.Add(new CancellationTokenModelBinderProvider());
 			options.ModelBinderProviders.Add(new GenericModelBinderProvider());
 
 			// replace SystemTextJsonOutputFormatter having jsonSerializerOptions
