@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -10,14 +10,14 @@
 		<RepositoryUrl>https://github.com/alphons/Mvc.ModelBinding.MultiParameter.git</RepositoryUrl>
 		<Description>New ValueProviders and ModelBinder for multi parameters model binding out of the box on AspNetCore</Description>
 		<PackageDescription>New ValueProviders and ModelBinder for multi parameters model binding out of the box on AspNetCore</PackageDescription>
-		<Version>8.2.3</Version>
-		<PackageId>Mvc.ModelBinding.MultiParameter</PackageId>
 		<Authors>alphons</Authors>
-		<AssemblyVersion>8.0.0.0</AssemblyVersion>
-		<FileVersion>8.2.3.0</FileVersion>
+		<PackageId>Mvc.ModelBinding.MultiParameter</PackageId>
 		<PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
 		<PackageTags>Microsoft;AspNetCore;Mvc;AspNetCoreMvc;json</PackageTags>
 		<PackageIcon>icon.png</PackageIcon>
+		<Version>10.0.1</Version>
+		<AssemblyVersion>10.0.0.0</AssemblyVersion>
+		<FileVersion>10.0.1.0</FileVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

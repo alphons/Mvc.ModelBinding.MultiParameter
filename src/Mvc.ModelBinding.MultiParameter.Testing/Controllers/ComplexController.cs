@@ -501,7 +501,10 @@ public class ApiController : ControllerBase
 	[RequestFormLimits(MultipartBodyLengthLimit = 2_500_000_000)]
 	public async Task<IActionResult> Upload(List<IFormFile> files, string Form1)
 	{
-		if (files?.Count == 0)
+		if(files == null)
+			return BadRequest("No file uploaded or file is empty.");
+
+		if (files.Count == 0)
 			return BadRequest("No file uploaded or file is empty.");
 
 		try
